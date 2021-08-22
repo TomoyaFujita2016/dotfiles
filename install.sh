@@ -38,28 +38,34 @@ cp ./config.ctags.org ${HOME}/.ctags.d/config.ctags
 # pyenv, virtualenv
 brew install pyenv pyenv-virtualenv
 
-# backup .zshrc .zprofile .config/nvim
-mv ${HOME}/.zshrc ${DOTBACKUP}/zshrc.org
-mv ${HOME}/.zprofile ${DOTBACKUP}/zprofile.org
-mv ${HOME}/.zlogin ${DOTBACKUP}/zlogin.org
-mv ${HOME}/.zlogout ${DOTBACKUP}/zlogout.org
-mv ${HOME}/.zpreztorc ${DOTBACKUP}/zpreztorc.org
-mv ${HOME}/.zshenv ${DOTBACKUP}/zshenv.org
-mv ${HOME}/.gitconfig ${DOTBACKUP}/gitconfig.org
-mv ${HOME}/.gitignore_global ${DOTBACKUP}/gitignore_global.org
-mv ${XDG_CONFIG_HOME}/nvim ${DOTBACKUP}/nvim.org
+# backup dotfiles
+backup (){
+    mv ${HOME}/$1 ${DOTBACKUP}/${1}.org
+}
+backup .zshrc
+backup .zprofile
+backup .zlogin
+backup .zlogout
+backup .zpreztorc
+backup .zshenv
+backup .gitconfig
+backup .gitignore_global
+backup .config/nvim
 
 # link dotfiles
+link_dot () {
+    ln -s ${DOTDIR}/$1 $2
+}
 cd ${HOME}
-ln -s ${DOTDIR}/.zshrc
-ln -s ${DOTDIR}/.zprofile
-ln -s ${DOTDIR}/.zlogin
-ln -s ${DOTDIR}/.zlogout
-ln -s ${DOTDIR}/.zpreztorc
-ln -s ${DOTDIR}/.zshenv
-ln -s ${DOTDIR}/.gitconfig
-ln -s ${DOTDIR}/.gitignore_global
-ln -s ${DOTDIR}/.config/nvim ${XDG_CONFIG_HOME}
+link_dot .zshrc
+link_dot .zprofile
+link_dot .zlogin
+link_dot .zlogout
+link_dot .zpreztorc
+link_dot .zshenv
+link_dot .gitconfig
+link_dot .gitignore_global
+link_dot .config/nvim ${XDG_CONFIG_HOME}
 
 # load .zshrc
 source ${HOME}/.zshrc
