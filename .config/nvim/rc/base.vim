@@ -1,3 +1,5 @@
+set t_Co=256
+
 "インデント系
 set expandtab
 set tabstop=4
@@ -70,9 +72,9 @@ set title
 set cursorline
 
 " タイムアウト時間設定
-set timeout 
-set timeoutlen=1000 
-set ttimeout 
+set timeout
+set timeoutlen=1000
+set ttimeout
 set ttimeoutlen=50
 
 " wildmenuを有効にする

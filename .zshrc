@@ -11,8 +11,15 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
-
-alias "vi"="nvim"
+function fzf-checkout-branch() {
+  local branches branch
+  branches=$(git branch | sed -e 's/\(^\* \|^  \)//g' | cut -d " " -f 1) &&
+  branch=$(echo "$branches" | fzf --preview "git show --color=always {}") &&
+  git checkout $(echo "$branch")
+}
+zle     -N   fzf-checkout-branch
+alias vi='nvim'
+alias vif='nvim $(fzf)'
 
 export CPPFLAGS="${CFLAGS}"
 export CXXFLAGS="${CFLAGS}"

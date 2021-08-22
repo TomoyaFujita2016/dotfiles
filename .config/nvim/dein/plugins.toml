@@ -92,3 +92,135 @@ let g:airline#extensions#tabline#enabled = 1
 # icon
 [[plugins]]
 repo = 'ryanoasis/vim-devicons'
+
+
+# 補完
+[[plugins]]
+repo = 'neoclide/coc.nvim'
+rev = 'release'
+hook_add = '''
+  let g:coc_global_extensions = [
+      \ 'coc-lists',
+      \ 'coc-json',
+      \ 'coc-html',
+      \ 'coc-css',
+      \ 'coc-jedi',
+      \ ]
+  nmap <silent> gd <Plug>(coc-definition)
+  nmap <silent> gr <Plug>(coc-references)
+
+'''
+
+[[plugins]]
+repo = 'tpope/vim-fugitive'
+hook_add = '''
+  let g:airline#extensions#branch#enabled = 1
+  nnoremap [fugitive]  <Nop>
+  nmap <space>g [fugitive]
+  nnoremap <silent> [fugitive]s :Gstatus<CR><C-w>T
+  nnoremap <silent> [fugitive]a :Gwrite<CR>
+  nnoremap <silent> [fugitive]c :Gcommit-v<CR>
+  nnoremap <silent> [fugitive]b :Gblame<CR>
+  nnoremap <silent> [fugitive]p :Gpull<CR>
+  nnoremap <silent> [fugitive]d :Gdiff<CR>
+  nnoremap <silent> [fugitive]m :Gmerge<CR>
+'''
+
+[[plugins]]
+repo = 'airblade/vim-gitgutter'
+
+
+[[plugins]]
+repo = 'junegunn/fzf'
+build = './install --bin'
+merged = '0'
+
+[[plugins]]
+repo = 'junegunn/fzf.vim'
+depends = 'fzf'
+on_cmd = [
+    'Files',
+    'ProjectFiles',
+    'Buffers',
+    'BLines',
+    'History',
+    'Tags',
+    'BTags',
+    'GFiles',
+    'Ag',
+]
+hook_add = '''
+  command! -bang -nargs=* Rg
+    \ call fzf#vim#grep(
+    \   'rg --line-number --no-heading '.shellescape(<q-args>), 0,
+    \   fzf#vim#with_preview({'options': '--exact --reverse'}, 'right:50%:wrap'))
+    let $BAT_THEME        = 'TwoDark'
+    let $BAT_STYLE        = 'plain'
+    let g:fzf_colors =
+        \ { 'fg':      ['fg', 'Normal'],
+          \ 'bg':      ['bg', 'Normal'],
+          \ 'hl':      ['fg', 'Comment'],
+          \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+          \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+          \ 'hl+':     ['fg', 'Statement'],
+          \ 'info':    ['fg', 'PreProc'],
+          \ 'prompt':  ['fg', 'Conditional'],
+          \ 'pointer': ['fg', 'Exception'],
+          \ 'marker':  ['fg', 'Keyword'],
+          \ 'spinner': ['fg', 'Label'],
+          \ 'header':  ['fg', 'Comment'] }
+    nnoremap <silent> <leader>ag  :Ag <C-R><C-W><CR>
+    nnoremap <silent> <leader>AG  :Ag <C-R><C-A><CR>
+    xnoremap <silent> <leader>ag  y:Ag <C-R>"<CR>
+    autocmd VimEnter * nnoremap <silent><expr><C-P> (expand('%') =~ 'NERD_tree' ? "\<C-W>\<C-W>" : '').":Files<CR>"
+    autocmd VimEnter * nnoremap <silent><expr><leader>F (expand('%') =~ 'NERD_tree' ? "\<C-W>\<C-W>" : '').':Files'.(!empty(expand('<cword>')) ? '--query='.expand('<cword>') : '').'<CR>'
+'''
+
+[[plugins]]
+repo = 'ervandew/supertab'
+
+[[plugins]]
+repo = 'heerun/vim-polyglot'
+
+# シンタックスハイライト命
+[[plugins]]
+repo = 'vim-python/python-syntax'
+hook_add = '''
+    let g:python_highlight_all = 1
+'''
+
+# clip
+[[plugins]]
+repo = 'svermeulen/vim-easyclip'
+hook_add = '''
+    " クリップボードにコピーしたものを履歴として残す。vim再起動時に復元
+    let g:EasyClipShareYanks = 1
+    " easycilpからコピーした一覧を取得
+    function! s:yank_list()
+      redir => ys
+      silent Yanks
+      redir END
+      return split(ys, '\n')[1:]
+    endfunction
+
+    " 引数からPasteコマンドで貼り付け
+    function! s:yank_handler(reg)
+      if empty(a:reg)
+        echo "aborted register paste"
+      else
+        let token = split(a:reg, ' ')
+        execute 'Paste' . token[0]
+      endif
+    endfunction
+
+    " fzfを使って一覧を呼び出して貼り付け
+    command! FZFYank call fzf#run({
+    \ 'source': <sid>yank_list(),
+    \ 'sink': function('<sid>yank_handler'),
+    \ 'options': '-m --prompt="FZFYank> "',
+    \ 'down':    '40%'
+    \ })
+
+    nnoremap <C-Y><C-Y> :<C-U>FZFYank<CR>
+    inoremap <C-Y><C-Y> <C-O>:<C-U>FZFYank<CR>
+'''
