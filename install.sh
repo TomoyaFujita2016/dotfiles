@@ -16,7 +16,7 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores true
 # git,neovim
 brew update
 brew upgrade
-brew install git neovim the_silver_searcher bat
+brew install git neovim the_silver_searcher bat fzf ripgrep
 
 
 # install fonts

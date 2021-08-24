@@ -49,17 +49,18 @@ endfunction
 repo = 'dense-analysis/ale'
 hook_add = '''
 let g:ale_linters = {
-    \ 'python': ['flake8'],
+    \ 'python': ['flake8', 'mypy'],
     \ 'html': [],
     \ 'css': ['stylelint'],
     \ 'javascript': ['eslint'],
     \ 'vue': ['eslint', 'vls']
     \ }
 let g:ale_fixers = {
-    \'*': ['remove_trailing_lines', 'trim_whitespace'],
-    \ 'python': ['black', 'isort'],
+    \ '*': ['remove_trailing_lines', 'trim_whitespace'],
+    \ 'python': ['autopep8', 'black'],
     \ 'javascript': ['eslint'],
     \ }
+
 
 "行頭のマークが出る部分を常に表示するようにする
 let g:ale_sign_column_always = 1
@@ -75,6 +76,15 @@ highlight link ALEWarningSign StorageClass
 " Ctrl + jで次の指摘へ、Ctrl + kで前の指摘へ移動
 nmap <silent> <C-J> <Plug>(ale_previous_wrap)
 nmap <silent> <C-K> <Plug>(ale_next_wrap)
+
+let g:ale_python_flake8_executable = g:python3_host_prog
+let g:ale_python_flake8_options = '-m flake8 --ignore=I201'
+let g:ale_python_mypy_executable = g:python3_host_prog
+let g:ale_python_mypy_options = '-m mypy'
+let g:ale_python_autopep8_executable = g:python3_host_prog
+let g:ale_python_autopep8_options = '-m autopep8'
+let g:ale_python_black_executable = g:python3_host_prog
+let g:ale_python_black_options = '-m black'
 '''
 
 # nerdtree
@@ -94,22 +104,6 @@ let g:airline#extensions#tabline#enabled = 1
 repo = 'ryanoasis/vim-devicons'
 
 
-# 補完
-[[plugins]]
-repo = 'neoclide/coc.nvim'
-rev = 'release'
-hook_add = '''
-  let g:coc_global_extensions = [
-      \ 'coc-lists',
-      \ 'coc-json',
-      \ 'coc-html',
-      \ 'coc-css',
-      \ 'coc-jedi',
-      \ ]
-  nmap <silent> gd <Plug>(coc-definition)
-  nmap <silent> gr <Plug>(coc-references)
-
-'''
 
 [[plugins]]
 repo = 'tpope/vim-fugitive'
@@ -150,30 +144,64 @@ on_cmd = [
     'Ag',
 ]
 hook_add = '''
+  fun! FzfOmniFiles()
+    let is_git = system('git status')
+    if v:shell_error
+      :Files
+    else
+      :GFiles
+    endif
+  endfun
+  nnoremap <C-p> :call FzfOmniFiles()<CR>
+
+  " Ctrl+gで文字列検索を開く
+  " <S-?>でプレビューを表示/非表示する
   command! -bang -nargs=* Rg
-    \ call fzf#vim#grep(
-    \   'rg --line-number --no-heading '.shellescape(<q-args>), 0,
-    \   fzf#vim#with_preview({'options': '--exact --reverse'}, 'right:50%:wrap'))
-    let $BAT_THEME        = 'TwoDark'
-    let $BAT_STYLE        = 'plain'
-    let g:fzf_colors =
-        \ { 'fg':      ['fg', 'Normal'],
-          \ 'bg':      ['bg', 'Normal'],
-          \ 'hl':      ['fg', 'Comment'],
-          \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-          \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-          \ 'hl+':     ['fg', 'Statement'],
-          \ 'info':    ['fg', 'PreProc'],
-          \ 'prompt':  ['fg', 'Conditional'],
-          \ 'pointer': ['fg', 'Exception'],
-          \ 'marker':  ['fg', 'Keyword'],
-          \ 'spinner': ['fg', 'Label'],
-          \ 'header':  ['fg', 'Comment'] }
-    nnoremap <silent> <leader>ag  :Ag <C-R><C-W><CR>
-    nnoremap <silent> <leader>AG  :Ag <C-R><C-A><CR>
-    xnoremap <silent> <leader>ag  y:Ag <C-R>"<CR>
-    autocmd VimEnter * nnoremap <silent><expr><C-P> (expand('%') =~ 'NERD_tree' ? "\<C-W>\<C-W>" : '').":Files<CR>"
-    autocmd VimEnter * nnoremap <silent><expr><leader>F (expand('%') =~ 'NERD_tree' ? "\<C-W>\<C-W>" : '').':Files'.(!empty(expand('<cword>')) ? '--query='.expand('<cword>') : '').'<CR>'
+  \ call fzf#vim#grep(
+  \ 'rg --column --line-number --hidden --ignore-case --no-heading --color=always '.shellescape(<q-args>), 1,
+  \ <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 3..'}, 'up:60%')
+  \ : fzf#vim#with_preview({'options': '--exact --delimiter : --nth 3..'}, 'right:50%:hidden', '?'),
+  \ <bang>0)
+  nnoremap <C-g> :Rg<CR>
+
+  " frでカーソル位置の単語をファイル検索する
+  nnoremap fr vawy:Rg <C-R>"<CR>
+  " frで選択した単語をファイル検索する
+  xnoremap fr y:Rg <C-R>"<CR>
+
+  " fbでバッファ検索を開く
+  nnoremap fb :Buffers<CR>
+  " fpでバッファの中で1つ前に開いたファイルを開く
+  nnoremap fp :Buffers<CR><CR>
+  " flで開いているファイルの文字列検索を開く
+  nnoremap fl :BLines<CR>
+  " fmでマーク検索を開く
+  nnoremap fm :Marks<CR>
+  " fhでファイル閲覧履歴検索を開く
+  nnoremap fh :History<CR>
+  " fcでコミット履歴検索を開く
+  nnoremap fc :Commits<CR>
+
+  autocmd VimEnter * nnoremap <silent><expr><C-P> (expand('%') =~ 'NERD_tree' ? "\<C-W>\<C-W>" : '').":Files<CR>"
+  autocmd VimEnter * nnoremap <silent><expr><leader>F (expand('%') =~ 'NERD_tree' ? "\<C-W>\<C-W>" : '').':Files'.(!empty(expand('<cword>')) ? '--query='.expand('<cword>') : '').'<CR>'
+'''
+
+# 補完
+[[plugins]]
+repo = 'neoclide/coc.nvim'
+rev = 'release'
+hook_add = '''
+  let g:coc_global_extensions = [
+      \ 'coc-lists',
+      \ 'coc-json',
+      \ 'coc-html',
+      \ 'coc-css',
+      \ 'coc-jedi',
+      \ ]
+  nmap <silent> gd <Plug>(coc-definition)
+  nmap <silent> gr <Plug>(coc-references)
+  nmap <Leader>f [fzf-p]
+  xmap <Leader>f [fzf-p]
 '''
 
 [[plugins]]
@@ -223,4 +251,14 @@ hook_add = '''
 
     nnoremap <C-Y><C-Y> :<C-U>FZFYank<CR>
     inoremap <C-Y><C-Y> <C-O>:<C-U>FZFYank<CR>
+'''
+
+[[plugins]]
+repo = 'fisadev/vim-isort'
+on_ft = ['python']
+hook_add = '''
+    augroup auto_style
+      autocmd!
+      autocmd bufWritePost *.py :Isort
+    augroup END
 '''

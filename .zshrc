@@ -19,7 +19,7 @@ function fzf-checkout-branch() {
 }
 zle     -N   fzf-checkout-branch
 alias vi='nvim'
-alias vif='nvim $(fzf)'
+alias vf='nvim $(fzf)'
 
 export CPPFLAGS="${CFLAGS}"
 export CXXFLAGS="${CFLAGS}"

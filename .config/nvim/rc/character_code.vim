@@ -7,4 +7,5 @@ scriptencoding utf-8
 set fileformat=unix
 
 " □や○文字が崩れる問題を解決
-set ambiwidth=double
+" これのせいでfzfで使ってるbatのSyntaxHighlightもろもろ変だった
+"set ambiwidth=double

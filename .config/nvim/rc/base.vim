@@ -1,4 +1,6 @@
+set termguicolors
 set t_Co=256
+set rtp+=/opt/homebrew/opt/fzf
 
 "インデント系
 set expandtab

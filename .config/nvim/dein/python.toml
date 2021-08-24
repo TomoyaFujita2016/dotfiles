@@ -1,0 +1,9 @@
+[[plugins]]
+repo = 'fisadev/vim-isort'
+on_ft = ['python']
+hook_add = '''
+augroup auto_style
+  autocmd!
+  autocmd bufWritePost *.py :Isort
+augroup END
+'''

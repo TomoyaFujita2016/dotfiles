@@ -47,3 +47,6 @@ cmap w!! w !sudo tee > /dev/null %
 
 " ZZ kakikomi
 map ZZ :wq!<CR>
+
+" カーソル下の単語をハイライトする
+nnoremap <silent> <Space><Space> "zyiw:let @/ = '\<' . @z . '\>'<CR>:set hlsearch<CR>
