@@ -78,6 +78,11 @@ pyenv shell deinvim
 pip install -r ${DOTDIR}/dein_requirments.txt
 pyenv shell --unset
 
+# Ctrl+R
+bindkey -v
+bindkey '\e[3~' delete-char
+bindkey '^R' history-incremental-search-backward
+
 # echo todo
 echo 以下にチェックを入れて、\"${DOTDIR}\"を指定
 echo "iterm2 > General > Preferences > Load preferences from a custom folder or url."
