@@ -36,6 +36,13 @@ brew install --HEAD universal-ctags/universal-ctags/universal-ctags
 mkdir ${HOME}/.ctags.d
 cp ./config.ctags.org ${HOME}/.ctags.d/config.ctags
 
+# nodebrew
+INSTALL_NODE_V="v16.9.1"
+brew install nodebrew
+nodebrew setup
+nodebrew install-binary $INSTALL_NODE_V
+nodebrew use $INSTALL_NODE_V
+
 # pyenv, virtualenv
 brew install pyenv pyenv-virtualenv
 
