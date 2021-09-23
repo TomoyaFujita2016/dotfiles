@@ -262,3 +262,6 @@ hook_add = '''
       autocmd bufWritePost *.py :Isort
     augroup END
 '''
+
+[[plugins]]
+repo = 'koron/codic-vim'

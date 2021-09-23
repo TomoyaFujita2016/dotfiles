@@ -61,6 +61,7 @@ export LESS='-g -i -M -R -S -w -X -z-4'
 if (( $#commands[(i)lesspipe(|.sh)] )); then
   export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
 fi
-eval $(/opt/homebrew/bin/brew shellenv)
+#eval $(/opt/homebrew/bin/brew shellenv)
 
 eval "$(pyenv init --path)"
+export PATH=$HOME/.nodebrew/current/bin:$PATH
