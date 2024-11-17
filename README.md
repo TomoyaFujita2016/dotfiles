@@ -1,5 +1,15 @@
 # dotfiles
 
+## Generate .config symbolic link
+
+> If the configuration file already exists, it will be renamed to {file_or_dir_name}.org\_{timestamp}.
+
+## File tree
+
+```bash
+sh setup-config.sh
+```
+
 ```
 ➜ tree -a -I ".git" .
 .
@@ -61,12 +71,4 @@
 ├── README.md
 └── setup-config.sh
 
-```
-
-## Generate .config symbolic link
-
-> If the configuration file already exists, it will be renamed to {file_or_dir_name}.org\_{timestamp}.
-
-```bash
-sh setup-config.sh
 ```
