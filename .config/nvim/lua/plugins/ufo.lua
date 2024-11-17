@@ -1,14 +1,24 @@
 return {
   {
-    'kevinhwang91/nvim-ufo',
-    dependencies = { 
-      'kevinhwang91/promise-async',
+    "kevinhwang91/nvim-ufo",
+    dependencies = {
+      "kevinhwang91/promise-async",
       "neovim/nvim-lspconfig",
     },
     event = "BufReadPost",
     keys = {
-      { "zR", desc = "Open all folds" },
-      { "zM", desc = "Close all folds" },
+      {
+        "zR",
+        function(...)
+          require("ufo").openAllFolds(...)
+        end,
+      },
+      {
+        "zM",
+        function(...)
+          require("ufo").closeAllFolds(...)
+        end,
+      },
       { "zr", desc = "Increase fold level" },
       { "zm", desc = "Decrease fold level" },
       { "zc", desc = "Close fold" },
@@ -18,7 +28,7 @@ return {
       local utils = require("utils")
 
       -- 折りたたみの基本設定
-      vim.o.foldcolumn = '1'
+      vim.o.foldcolumn = "1"
       vim.o.foldlevel = 99
       vim.o.foldlevelstart = 99
       vim.o.foldenable = true
@@ -27,13 +37,17 @@ return {
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities.textDocument.foldingRange = {
         dynamicRegistration = false,
-        lineFoldingOnly = true
+        lineFoldingOnly = true,
       }
 
       -- Treesitterとlspをプロバイダーとして使用
       local handler = function(virtText, lnum, endLnum, width, truncate)
         local newVirtText = {}
-        local suffix = (' 󰁂 %d '):format(endLnum - lnum)
+        if endLnum - lnum == 1 then
+          suffix = " <<< 1 line"
+        else
+          suffix = (" <<<  %d lines"):format(endLnum - lnum)
+        end
         local sufWidth = vim.fn.strdisplaywidth(suffix)
         local targetWidth = width - sufWidth
         local curWidth = 0
@@ -45,52 +59,46 @@ return {
           else
             chunkText = truncate(chunkText, targetWidth - curWidth)
             local hlGroup = chunk[2]
-            table.insert(newVirtText, {chunkText, hlGroup})
+            table.insert(newVirtText, { chunkText, hlGroup })
             chunkWidth = vim.fn.strdisplaywidth(chunkText)
             -- 最後のチャンクが切り詰められた場合はそこで終了
             if curWidth + chunkWidth < targetWidth then
-              suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
+              suffix = suffix .. (" "):rep(targetWidth - curWidth - chunkWidth)
             end
             break
           end
           curWidth = curWidth + chunkWidth
         end
-        table.insert(newVirtText, {suffix, 'MoreMsg'})
+        table.insert(newVirtText, { suffix, "MoreMsg" })
         return newVirtText
       end
 
       -- UFOの設定
-      require('ufo').setup({
+      require("ufo").setup({
         provider_selector = function(bufnr, filetype, buftype)
-          return {'treesitter', 'indent'}
+          return { "treesitter", "indent" }
         end,
         fold_virt_text_handler = handler,
         preview = {
           win_config = {
-            border = {'', '─', '', '', '', '─', '', ''},
-            winhighlight = 'Normal:Folded',
-            winblend = 0
+            border = { "", "─", "", "", "", "─", "", "" },
+            winhighlight = "Normal:Folded",
+            winblend = 0,
           },
           mappings = {
-            scrollU = '<C-u>',
-            scrollD = '<C-d>',
-            jumpTop = '[',
-            jumpBot = ']'
-          }
+            scrollU = "<C-u>",
+            scrollD = "<C-d>",
+            jumpTop = "[",
+            jumpBot = "]",
+          },
         },
       })
 
       -- キーマッピング
-      local ufo = require('ufo')
-      
-      -- 基本的な折りたたみ操作
-      utils.map('n', 'zR', function() ufo.openAllFolds() end, { desc = "Open all folds" })
-      utils.map('n', 'zM', function() ufo.closeAllFolds() end, { desc = "Close all folds" })
-      utils.map('n', 'zr', function() ufo.increaseNextFoldLevel() end, { desc = "Increase fold level" })
-      utils.map('n', 'zm', function() ufo.decreaseNextFoldLevel() end, { desc = "Decrease fold level" })
+      local ufo = require("ufo")
 
       -- プレビュー関連
-      utils.map('n', 'K', function()
+      utils.map("n", "K", function()
         local winid = ufo.peekFoldedLinesUnderCursor()
         if not winid then
           vim.lsp.buf.hover()
