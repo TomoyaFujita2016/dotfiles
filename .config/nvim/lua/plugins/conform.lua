@@ -24,6 +24,7 @@ return {
           yaml = { "prettier" },
           markdown = { "prettier" },
           lua = { "stylua" },
+          sh = { "shfmt" },
         },
         format_on_save = {
           timeout_ms = 500,
