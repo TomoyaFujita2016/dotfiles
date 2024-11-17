@@ -1,0 +1,43 @@
+return {
+--  {
+--    "mfussenegger/nvim-lint",
+--    event = { "BufReadPre", "BufNewFile" },
+--    keys = {
+--      { "<C-l>", desc = "Trigger linting" },  -- Ctrl-lキーマップを追加
+--    },
+--    config = function()
+--      local lint = require("lint")
+--      local utils = require("utils")
+--
+--      -- Linterの設定
+--      lint.linters_by_ft = {
+--        python = { "mypy", "ruff" },
+--      }
+--
+--      -- Lintを実行する関数
+--      local function try_lint()
+--        -- バッファがファイルに関連付けられているか確認
+--        if vim.api.nvim_buf_get_name(0) == "" then
+--          return
+--        end
+--
+--        -- Lintの実行
+--        pcall(function()
+--          lint.try_lint()
+--        end)
+--      end
+--
+--      -- 保存時に自動的にリント実行
+--      vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+--        callback = function()
+--          try_lint()
+--        end,
+--      })
+--
+--      -- Ctrl-lでのLint実行設定
+--      utils.map("n", "<C-l>", function()
+--        try_lint()
+--      end, { desc = "Trigger linting" })
+--    end,
+--  },
+}
