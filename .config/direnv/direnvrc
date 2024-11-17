@@ -1,0 +1,1 @@
+export DIRENV_LOG_FORMAT="[$(tput setaf 2)direnv$(tput sgr0)] $(tput setaf 3)%s$(tput sgr0)"

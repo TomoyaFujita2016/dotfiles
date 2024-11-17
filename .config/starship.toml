@@ -1,0 +1,47 @@
+# Use custom format
+format = '$directory$all'
+
+# Wait 10 milliseconds for starship to check files under the current directory.
+scan_timeout = 10
+
+# Disable the blank line at the start of the prompt
+add_newline = false 
+
+
+[character]
+success_symbol = '[➜](bold green)'
+error_symbol = '[➜](bold red)'
+
+[directory]
+format = '[\[$path\]]($style)(${read_only}) '
+truncation_symbol = '…/'
+truncation_length = 8
+
+[git_branch]
+symbol = ""
+format = '[${symbol}${branch}](bold green)'
+
+[nodejs]
+symbol = "⬢"
+format = "($symbol${version}) "
+
+[python]
+pyenv_version_name = true
+symbol = "🐍"
+#format = "${pyenv_prefix}${version}${pyenv_version_name}${virtualenv}"
+format = '[${symbol}(${virtualenv} )${version} ](purple)'
+
+[rust]
+symbol = "🦀"
+format = "($symbol${version})"
+
+[package]
+symbol='📦'
+format = '[$symbol$version]($style) '
+
+[palettes.foo]
+mustard = '#af8700'
+
+[git_status]
+format = '([$all_status$ahead_behind]($style)) '
+staged = '[++\($count\)](green)'

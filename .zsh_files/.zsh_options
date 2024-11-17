@@ -1,0 +1,14 @@
+HISTFILE=~/.zsh_history
+export HISTSIZE=20000
+export SAVEHIST=40000
+setopt inc_append_history       # 実行時に履歴をファイルにに追加していく
+# setopt share_history            # 履歴を他のシェルとリアルタイム共有する
+setopt no_share_history     # 各セッションは独自の履歴を持ち、それを共有しない
+setopt hist_ignore_all_dups     # ヒストリーに重複を表示しない
+setopt hist_save_no_dups        # 重複するコマンドが保存されるとき、古い方を削除する。
+setopt extended_history         # コマンドのタイムスタンプをHISTFILEに記録する
+setopt hist_expire_dups_first   # HISTFILEのサイズがHISTSIZEを超える場合は、最初に重複を削除します
+
+## 小文字入力時に大文字を含めた補完をする
+zstyle ':completion:*' matcher-list 'm:{[:lower:]}={[:upper:]}'
+bindkey '^[[Z' autosuggest-accept

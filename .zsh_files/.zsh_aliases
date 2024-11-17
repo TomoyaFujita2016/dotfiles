@@ -1,0 +1,33 @@
+# ----------------------------
+# alias
+# ----------------------------
+
+alias vi="nvim"
+alias ls='ls --color=auto -G'
+alias la='ls -lAG'
+alias cb='xsel -bi'
+
+alias ll='ls -lG'
+alias nvimconf='cd ~/.config/nvim/'
+alias ide="~/.scripts/ide.sh"
+
+if type trash-put &> /dev/null
+then
+    alias rm='trash-put'
+else
+    alias rm='rm -i'
+fi
+
+alias webm2mp4='function _webm2mp4() {
+  ffmpeg -i "$1" \
+    -vf "crop=iw-mod(iw\,2):ih-mod(ih\,2):0:0" \
+    -c:v libx264 \
+    -preset veryslow \
+    -crf 18 \
+    -profile:v high \
+    -movflags +faststart \
+    -pix_fmt yuv420p \
+    -vsync vfr \
+    -copyts \
+    "${1%.*}.mp4"
+}; _webm2mp4'

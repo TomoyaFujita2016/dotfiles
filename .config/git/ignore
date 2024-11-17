@@ -1,0 +1,6 @@
+.envrc
+.python-version
+__pycache__/
+.~lock.*#
+.env
+.knowledges/

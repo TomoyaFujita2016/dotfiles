@@ -1,0 +1,13 @@
+# ----------------------------
+# tmux
+# ----------------------------
+# 初回シェル時のみ tmux実行
+if [ $SHLVL = 1 ]; then
+    # tmuxのmainセッションにアタッチ
+    tmux a -t main
+    tmux_return=$?
+    # 失敗したらmainセッションを作成
+    if [ $tmux_return = 1 ]; then
+        tmux new-session -s main
+    fi
+fi
