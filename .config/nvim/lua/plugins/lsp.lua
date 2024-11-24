@@ -1,3 +1,4 @@
+local utils = require("utils")
 return {
   -- Mason
   {
@@ -28,7 +29,6 @@ return {
     },
     config = function()
       -- 診断サインの設定
-      local utils = require("utils")
       vim.diagnostic.config({
         signs = {
           text = {
@@ -48,7 +48,7 @@ return {
           prefix = "",
         },
         -- 以下を追加
-        virtual_text = true, -- コード内に直接診断を表示しない
+        virtual_text = true, -- コード内に直接診断を表示
         echo_preview = true, -- コマンドラインにプレビューを表示
         show_diagnostic_autocmds = { "InsertLeave", "TextChanged" },
       })
@@ -127,12 +127,12 @@ return {
       })
 
       -- インサートモードに入った時もクリア
-      --vim.api.nvim_create_autocmd("InsertEnter", {
-      --  callback = function()
-      --    clear_message()
-      --    last_line = nil
-      --  end
-      --})
+      vim.api.nvim_create_autocmd("InsertEnter", {
+        callback = function()
+          clear_message()
+          last_line = nil
+        end,
+      })
 
       -- バッファを離れた時もクリア
       vim.api.nvim_create_autocmd("BufLeave", {
@@ -159,9 +159,45 @@ return {
       -- LSPサーバーの設定
       require("mason-lspconfig").setup_handlers({
         function(server_name)
-          require("lspconfig")[server_name].setup({
-            capabilities = require("cmp_nvim_lsp").default_capabilities(),
-          })
+          local config = {}
+
+          -- Pythonの場合の特別な設定
+          if server_name == "pyright" then
+            config = {
+              capabilities = require("cmp_nvim_lsp").default_capabilities(),
+              settings = {
+                python = {
+                  analysis = {
+                    autoSearchPaths = true,
+                    useLibraryCodeForTypes = true,
+                    diagnosticMode = "workspace",
+                  },
+                  pythonPath = utils.get_python_env(),
+                },
+              },
+            }
+          elseif server_name == "ruff" then
+            config = {
+              capabilities = require("cmp_nvim_lsp").default_capabilities(),
+              init_options = {
+                settings = {
+                  -- ruffの設定
+                  path = { require("utils").get_python_env(), "-m", "ruff" },
+                  interpreter = { require("utils").get_python_env() },
+                  importStrategy = "fromEnvironment",
+                  organizeImports = true,
+                  fixAll = true,
+                },
+              },
+            }
+          else
+            -- 他のLSPサーバーの場合はデフォルト設定
+            config = {
+              capabilities = require("cmp_nvim_lsp").default_capabilities(),
+            }
+          end
+
+          require("lspconfig")[server_name].setup(config)
         end,
       })
 

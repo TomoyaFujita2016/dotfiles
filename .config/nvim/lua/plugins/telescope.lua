@@ -53,7 +53,7 @@ return {
         pickers = {
           find_files = {
             hidden = true,
-            no_ignore = true, -- .gitignoreを無視
+            no_ignore = false, -- .gitignoreを無視
           },
         },
       })

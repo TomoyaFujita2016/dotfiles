@@ -4,6 +4,11 @@ return {
   -- { "mattn/emmet-vim", ft = { "html", "css", "javascript", "typescript", "vue" } },
   --{ "sheerun/vim-polyglot", event = { "BufReadPre", "BufNewFile" } },
 
+  -- vim-polyglot
+  {
+    "sheerun/vim-polyglot",
+    event = { "BufReadPre", "BufNewFile" },
+  },
   -- UI改善
   {
     "kkharji/lspsaga.nvim",

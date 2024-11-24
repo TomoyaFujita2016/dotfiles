@@ -1,83 +1,83 @@
 return {
-  --{
-  --  "nvim-treesitter/nvim-treesitter",
-  --  build = ":TSUpdate",
-  --  event = { "BufReadPost", "BufNewFile" },
-  --  config = function()
-  --    require("nvim-treesitter.configs").setup({
-  --      ensure_installed = {
-  --        -- Web Development
-  --        "html",
-  --        "css",
-  --        "scss",
-  --        "javascript",
-  --        "typescript",
-  --        "tsx",
-  --        "vue",
+  {
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    event = { "BufReadPost", "BufNewFile" },
+    config = function()
+      require("nvim-treesitter.configs").setup({
+        ensure_installed = {
+          -- Web Development
+          "html",
+          "css",
+          "scss",
+          "javascript",
+          "typescript",
+          "tsx",
+          "vue",
 
-  --        -- Backend/Script
-  --        "python",
-  --        "lua",
-  --        "bash",
+          -- Backend/Script
+          "python",
+          "lua",
+          "bash",
 
-  --        -- Markup/Data
-  --        "json",
-  --        "yaml",
-  --        "toml",
-  --        "markdown",
-  --        "markdown_inline",
+          -- Markup/Data
+          "json",
+          "yaml",
+          "toml",
+          "markdown",
+          "markdown_inline",
 
-  --        -- Other useful parsers
-  --        "regex",
-  --        "vim",
-  --        "vimdoc",
-  --        "query",  -- Treesitterのクエリ言語
-  --        "git_rebase",
-  --        "gitignore",
-  --        "gitcommit",
-  --        "diff",
+          -- Other useful parsers
+          "regex",
+          "vim",
+          "vimdoc",
+          "query", -- Treesitterのクエリ言語
+          "git_rebase",
+          "gitignore",
+          "gitcommit",
+          "diff",
 
-  --        -- Web-related tools
-  --        "prisma",
-  --        "graphql",
-  --        "dockerfile",
-  --      },
-  --      highlight = {
-  --        enable = true,
-  --        additional_vim_regex_highlighting = false,
-  --      },
-  --      indent = {
-  --        enable = true,
-  --      },
-  --      incremental_selection = {
-  --        enable = true,
-  --        keymaps = {
-  --          init_selection = "<CR>",
-  --          node_incremental = "<CR>",
-  --          node_decremental = "<BS>",
-  --          scope_incremental = "<TAB>",
-  --        },
-  --      },
-  --      -- Auto-completion of HTML/JSX tags
-  --      autotag = {
-  --        enable = true,
-  --      },
-  --      fold = {
-  --        enable = true,
-  --      },
-  --      rainbow = {
-  --        enable = true,
-  --        extended_mode = true,
-  --        max_file_lines = 1000,
-  --      },
-  --    })
+          -- Web-related tools
+          "prisma",
+          "graphql",
+          "dockerfile",
+        },
+        --highlight = {
+        --  enable = true,
+        --  additional_vim_regex_highlighting = false,
+        --},
+        indent = {
+          enable = true,
+        },
+        --incremental_selection = {
+        --  enable = true,
+        --  keymaps = {
+        --    init_selection = "<CR>",
+        --    node_incremental = "<CR>",
+        --    node_decremental = "<BS>",
+        --    scope_incremental = "<TAB>",
+        --  },
+        --},
+        -- Auto-completion of HTML/JSX tags
+        autotag = {
+          enable = true,
+        },
+        fold = {
+          enable = true,
+        },
+        rainbow = {
+          enable = true,
+          extended_mode = true,
+          max_file_lines = 1000,
+        },
+      })
 
-  --    -- Fallback configuration
-  --    vim.opt.foldmethod = "expr"
-  --    vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-  --    vim.opt.foldenable = false  -- 起動時にフォールドを無効化
-  --  end,
-  --},
+      -- Fallback configuration
+      vim.opt.foldmethod = "expr"
+      vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+      vim.opt.foldenable = false -- 起動時にフォールドを無効化
+    end,
+  },
 
   --{
   --  "nvim-treesitter/nvim-treesitter-textobjects",

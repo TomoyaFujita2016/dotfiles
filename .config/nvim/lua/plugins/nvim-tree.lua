@@ -23,11 +23,11 @@ return {
         api.config.mappings.default_on_attach(bufnr)
 
         -- カスタムマッピング
-        vim.keymap.set('n', '<BS>', api.tree.change_root_to_parent, opts('Up'))
-        vim.keymap.set('n', '<CR>', api.tree.change_root_to_node, opts('Up'))
-        vim.keymap.set('n', 'v', api.node.open.vertical, opts('Open node vertically'))
-        vim.keymap.set('n', 's', api.node.open.horizontal, opts('Open node horizontal'))
-        vim.keymap.set('n', '?', api.tree.toggle_help, opts('Help'))
+        vim.keymap.set("n", "<BS>", api.tree.change_root_to_parent, opts("Up"))
+        vim.keymap.set("n", "<CR>", api.tree.change_root_to_node, opts("Up"))
+        vim.keymap.set("n", "v", api.node.open.vertical, opts("Open node vertically"))
+        vim.keymap.set("n", "s", api.node.open.horizontal, opts("Open node horizontal"))
+        vim.keymap.set("n", "?", api.tree.toggle_help, opts("Help"))
       end
 
       -- 変更されたバッファーがあるか確認する関数
@@ -45,7 +45,7 @@ return {
         on_attach = my_on_attach_nvimtree,
         sort_by = "extension",
         view = {
-          width = 25,
+          width = 50,
           side = "left",
           signcolumn = "no",
         },
@@ -91,11 +91,11 @@ return {
           if vim.fn.isdirectory(data.file) == 1 then
             require("nvim-tree.api").tree.open()
           end
-        end
+        end,
       })
 
       -- Ex コマンドの設定
-      vim.api.nvim_create_user_command('Ex', function()
+      vim.api.nvim_create_user_command("Ex", function()
         vim.cmd.NvimTreeToggle()
       end, {})
 
@@ -107,9 +107,11 @@ return {
             return
           end
 
-          if #vim.api.nvim_list_wins() == 1 and
-             vim.bo.filetype == "NvimTree" and
-             not is_modified_buffer_open(vim.fn.getbufinfo({bufmodified = 1})) then
+          if
+            #vim.api.nvim_list_wins() == 1
+            and vim.bo.filetype == "NvimTree"
+            and not is_modified_buffer_open(vim.fn.getbufinfo({ bufmodified = 1 }))
+          then
             vim.cmd("quit")
           end
         end,
