@@ -3,7 +3,13 @@ return {
     "nvim-telescope/telescope.nvim",
     priority = 1200,
     cmd = "Telescope",
-    dependencies = { "nvim-lua/plenary.nvim" },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "make",
+      },
+    },
     keys = {
       --{ "<leader>ff", desc = "Find files" },
       { "<leader>fg", desc = "Live grep" },
@@ -22,9 +28,33 @@ return {
       --utils.map("n", "<leader>ff", function()
       --  telescope.find_files({hidden = true})
       --end)
+      --utils.map("n", "<leader>fg", function()
+      --  telescope.live_grep()
+      --end)
+      -- カレントディレクトリのみの検索（高速）
       utils.map("n", "<leader>fg", function()
+        telescope.live_grep({
+          -- カレントディレクトリのみ検索
+          cwd = vim.fn.expand("%:p:h"),
+
+          additional_args = function()
+            return {
+              "--hidden",
+              "--glob",
+              "!.git/*",
+              "--glob",
+              "!node_modules/*",
+              "--max-filesize",
+              "500K",
+            }
+          end,
+        })
+      end)
+      -- プロジェクト全体検索用の別コマンド
+      utils.map("n", "<leader>fG", function()
         telescope.live_grep()
       end)
+
       utils.map("n", "<leader>fb", function()
         telescope.buffers()
       end)
@@ -52,11 +82,32 @@ return {
         },
         pickers = {
           find_files = {
-            hidden = true,
-            no_ignore = false, -- .gitignoreを無視
+            hidden = false,
+            no_ignore = true,
           },
         },
+        live_grep = {
+          additional_args = function()
+            return {
+              "--hidden",
+              "--glob",
+              "!.git/*",
+              "--glob",
+              "!node_modules/*",
+              "--glob",
+              "!.next/*",
+              "--glob",
+              "!.venv/*",
+              "--glob",
+              "!__pycache__/*",
+              "--max-filesize",
+              "1M", -- 1MB以上のファイルは検索しない
+            }
+          end,
+        },
       })
+
+      require("telescope").load_extension("fzf")
     end,
   },
 }

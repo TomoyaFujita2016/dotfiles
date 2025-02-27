@@ -201,10 +201,60 @@ return {
         end,
       })
 
+      -- LSP参照をTelescopeで表示する安定版実装
+      local function safe_lsp_references()
+        -- 現在のカーソル位置の情報を取得
+        local bufnr = vim.api.nvim_get_current_buf()
+        local pos = vim.api.nvim_win_get_cursor(0)
+        local row, col = pos[1] - 1, pos[2]
+
+        -- LSPリクエストのパラメータを手動で構築
+        local params = {
+          textDocument = {
+            uri = vim.uri_from_bufnr(bufnr),
+          },
+          position = {
+            line = row,
+            character = col,
+          },
+          context = {
+            includeDeclaration = true,
+          },
+        }
+
+        -- 参照を探す
+        vim.lsp.buf_request(bufnr, "textDocument/references", params, function(err, result, _, _)
+          if err then
+            vim.notify("LSPエラー: " .. tostring(err), vim.log.levels.ERROR)
+            return
+          end
+
+          if not result or vim.tbl_isempty(result) then
+            vim.notify("参照が見つかりませんでした", vim.log.levels.INFO)
+            return
+          end
+
+          -- 結果をQuickfixリストに変換
+          local items = vim.lsp.util.locations_to_items(result, "utf-8")
+          vim.fn.setqflist({}, "r", {
+            title = "LSP References",
+            items = items,
+          })
+
+          -- Telescope使ってQuickfixリストを表示
+          require("telescope.builtin").quickfix({
+            prompt_title = "LSP References",
+            path_display = { "smart" },
+          })
+        end)
+      end
+
       -- LSP関連のキーマッピング
       local opts = { noremap = true, silent = true }
       vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-      vim.keymap.set("n", "gr", "<cmd>Telescope lsp_references<CR>", opts)
+      --vim.keymap.set("n", "gr", "<cmd>Telescope lsp_references<CR>", opts)
+      --vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+      vim.keymap.set("n", "gr", safe_lsp_references, opts)
       vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
     end,
   },
