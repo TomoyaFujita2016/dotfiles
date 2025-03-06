@@ -44,8 +44,16 @@ return {
               "!.git/*",
               "--glob",
               "!node_modules/*",
+              "--glob",
+              "!.next/*",
+              "--glob",
+              "!.venv/*",
+              "--glob",
+              "!__pycache__/*",
+              "!*.pyc",
+              "!.lock",
               "--max-filesize",
-              "500K",
+              "1M", -- 1MB以上のファイルは検索しない
             }
           end,
         })
@@ -100,6 +108,8 @@ return {
               "!.venv/*",
               "--glob",
               "!__pycache__/*",
+              "!*.pyc",
+              "!.lock",
               "--max-filesize",
               "1M", -- 1MB以上のファイルは検索しない
             }

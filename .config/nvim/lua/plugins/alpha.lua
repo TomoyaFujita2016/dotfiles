@@ -5,8 +5,8 @@ return {
     opts = function()
       local dashboard = require("alpha.themes.dashboard")
       dashboard.section.buttons.val = {
+        dashboard.button("i", "  New file", ":ene <BAR> startinsert <CR>"),
         dashboard.button("f", "  Find file", ":Telescope smart_open <CR>"),
-        dashboard.button("n", "  New file", ":ene <BAR> startinsert <CR>"),
         dashboard.button("r", "  Restore Session", [[:lua require("persistence").load() <CR>]]),
         dashboard.button("l", "  Recent files", ":Telescope oldfiles <CR>"),
         dashboard.button("g", "  Find text", ":Telescope live_grep <CR>"),
