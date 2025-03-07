@@ -58,8 +58,8 @@ return {
       vim.api.nvim_set_keymap("n", "<Leader>l", "<Cmd>noh<CR>", kopts)
 
       -- ハイライトグループの設定（背景色：グレー、文字色：黒）
-      vim.api.nvim_set_hl(0, "HlSearchLensNear", { bg = "#808080", fg = "#000000" })
-      vim.api.nvim_set_hl(0, "HlSearchLens", { bg = "#808080", fg = "#000000" })
+      vim.api.nvim_set_hl(0, "HlSearchLensNear", { bg = "#98D2C0", fg = "#000000" })
+      vim.api.nvim_set_hl(0, "HlSearchLens", { bg = "#4F959D", fg = "#000000" })
     end,
   },
 }

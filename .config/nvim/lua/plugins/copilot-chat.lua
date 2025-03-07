@@ -8,15 +8,9 @@ return {
     build = "make tiktoken", -- Only on MacOS or Linux
     opts = {
       window = {
-        layout = "vertical", -- 'float' | 'bottom' | 'top' | 'right' | 'left'
+        layout = "float", -- 'float' | 'bottom' | 'top' | 'right' | 'left'
         width = 0.4, -- width of the chat window when layout is 'float', 'right' or 'left'
         height = 1.0, -- height of the chat window when layout is 'float', 'top' or 'bottom'
-      },
-
-      prompts = {
-        SpeakInJapanese = {
-          system_prompt = "ユーザーの質問には日本語で答えること。",
-        },
       },
     },
     keys = {
