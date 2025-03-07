@@ -31,35 +31,7 @@ return {
       --utils.map("n", "<leader>fg", function()
       --  telescope.live_grep()
       --end)
-      -- カレントディレクトリのみの検索（高速）
       utils.map("n", "<leader>fg", function()
-        telescope.live_grep({
-          -- カレントディレクトリのみ検索
-          cwd = vim.fn.expand("%:p:h"),
-
-          additional_args = function()
-            return {
-              "--hidden",
-              "--glob",
-              "!.git/*",
-              "--glob",
-              "!node_modules/*",
-              "--glob",
-              "!.next/*",
-              "--glob",
-              "!.venv/*",
-              "--glob",
-              "!__pycache__/*",
-              "!*.pyc",
-              "!.lock",
-              "--max-filesize",
-              "1M", -- 1MB以上のファイルは検索しない
-            }
-          end,
-        })
-      end)
-      -- プロジェクト全体検索用の別コマンド
-      utils.map("n", "<leader>fG", function()
         telescope.live_grep()
       end)
 
@@ -108,10 +80,12 @@ return {
               "!.venv/*",
               "--glob",
               "!__pycache__/*",
+              "--glob",
               "!*.pyc",
-              "!.lock",
+              "--glob",
+              "!*.lock",
               "--max-filesize",
-              "1M", -- 1MB以上のファイルは検索しない
+              "1M",
             }
           end,
         },

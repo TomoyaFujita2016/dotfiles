@@ -1,4 +1,5 @@
 {
+  "CopilotChat.nvim": { "branch": "main", "commit": "ccde7a50e8e35588caefd9165c152952f4c8c64e" },
   "aerial.nvim": { "branch": "master", "commit": "3284a2cb858ba009c79da87d5e010ccee3c99c4d" },
   "alpha-nvim": { "branch": "main", "commit": "de72250e054e5e691b9736ee30db72c65d560771" },
   "badwolf": { "branch": "master", "commit": "61d75affa51d40213d671edc9c8ff83992d7fd6f" },
