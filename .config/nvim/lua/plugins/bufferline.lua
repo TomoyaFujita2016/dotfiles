@@ -64,8 +64,8 @@ return {
     end,
     opts = {
       options = {
-        numbers = "ordinal",
-        always_show_bufferline = false,
+        numbers = "buffer_id",
+        always_show_bufferline = true,
         diagnostics = "nvim_lsp",
         --diagnostics_indicator = function(_, _, diag)
         --  local icons = require("config.icons").diagnostics

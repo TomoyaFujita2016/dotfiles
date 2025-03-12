@@ -4,7 +4,24 @@ return {
     lazy = false,
     config = function()
       require("colorizer").setup({
-        "*", -- すべてのファイルタイプに対して有効化
+        "css",
+        "javascript",
+        "typescript",
+        "typescriptreact",
+        "javascriptreact",
+        "python",
+        "lua",
+        "vim",
+        "sh",
+        "bash",
+        "zsh",
+        "dockerfile",
+        "toml",
+        "yaml",
+        "json",
+        "markdown",
+        "html",
+        "xml",
       }, {
         RGB = true, -- #RGB形式のカラーコード
         RRGGBB = true, -- #RRGGBB形式のカラーコード

@@ -51,6 +51,10 @@ return {
       -- Telescopeのデフォルト設定
       require("telescope").setup({
         defaults = {
+          preview = {
+            treesitter = true,
+            highlight_limit = 1000,
+          },
           path_display = { "truncate" },
           mappings = {
             i = {
