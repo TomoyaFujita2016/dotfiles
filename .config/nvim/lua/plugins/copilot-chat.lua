@@ -24,6 +24,8 @@ return {
         return
       end
       require("CopilotChat").setup({
+        model = "claude-3.7-sonnet",
+        clear_chat_on_new_prompt = true,
         show_help = "yes",
         prompts = {
           Optimize = {

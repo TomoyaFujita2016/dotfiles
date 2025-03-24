@@ -5,6 +5,7 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     config = function()
       require("nvim-treesitter.configs").setup({
+        -- Avanteファイル用のTreesitterパーサーを追加
         ensure_installed = {
           -- Web Development
           "html",
@@ -42,10 +43,17 @@ return {
           "graphql",
           "dockerfile",
         },
-        --highlight = {
-        --  enable = true,
-        --  additional_vim_regex_highlighting = false,
-        --},
+        highlight = {
+          enable = true, -- 基本的に有効に
+          disable = function(lang, buf)
+            -- avanteファイル以外はハイライトを無効にする
+            local ft = vim.api.nvim_buf_get_option(buf, "filetype")
+            return ft ~= "Avante" and ft ~= "avante"
+          end,
+          additional_vim_regex_highlighting = {
+            "Avante", -- 大文字のAvanteに合わせる
+          },
+        },
         indent = {
           enable = true,
         },
