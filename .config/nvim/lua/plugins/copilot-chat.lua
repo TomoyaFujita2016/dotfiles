@@ -49,6 +49,7 @@ return {
             mapping = "<leader>cc",
             description = "バディにコミットメッセージの作成をお願いする",
             selection = select.gitdiff,
+            context = { include_context = false },
             callback = function(response, _)
               local commit_message = response:match("```gitcommit\n(.-)\n```")
               if commit_message then

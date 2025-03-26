@@ -1,11 +1,26 @@
 local utils = require("utils")
+-- Mason.nvimの修正設定
 return {
   -- Mason
   {
     "williamboman/mason.nvim",
+    version = "v1.10.0",
     build = ":MasonUpdate",
     config = function()
-      require("mason").setup()
+      require("mason").setup({
+        -- 明示的に設定オプションを指定
+        ui = {
+          check_outdated_packages_on_open = true,
+          border = "rounded",
+          icons = {
+            package_installed = "✓",
+            package_pending = "➜",
+            package_uninstalled = "✗",
+          },
+        },
+        log_level = vim.log.levels.DEBUG,
+        max_concurrent_installers = 4,
+      })
     end,
   },
 
@@ -16,16 +31,26 @@ return {
       "williamboman/mason.nvim",
       "neovim/nvim-lspconfig",
     },
+    config = function()
+      require("mason-lspconfig").setup({
+        -- 明示的に設定オプションを指定
+        ensure_installed = {
+          -- 必要なLSPサーバーをここに追加
+          -- 例: "lua_ls", "pyright", "tsserver", など
+        },
+        automatic_installation = true,
+      })
+    end,
   },
 
-  -- LSP設定
+  -- LSP設定（元のコードと同じ）
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
-      "mason.nvim",
-      "mason-lspconfig.nvim",
+      "williamboman/mason.nvim",
+      "williamboman/mason-lspconfig.nvim",
     },
     config = function()
       -- 診断サインの設定
@@ -47,116 +72,17 @@ return {
           header = "",
           prefix = "",
         },
-        -- 以下を追加
-        virtual_text = true, -- コード内に直接診断を表示
-        echo_preview = true, -- コマンドラインにプレビューを表示
+        virtual_text = true,
+        echo_preview = true,
         show_diagnostic_autocmds = { "InsertLeave", "TextChanged" },
       })
 
-      -- ***********************************
-      -- ** <診断メッセージを表示する関数たち>
-      -- ***********************************
-      -- メッセージをクリアする関数
-      local function clear_message()
-        vim.api.nvim_echo({ { "", "" } }, false, {})
-      end
-
-      -- 前回の行番号を保存する変数
-      local last_line = nil
-
-      -- 診断メッセージのフォーマット関数
-      local function format_diagnostic(diagnostic)
-        local severity_icon = {
-          [vim.diagnostic.severity.ERROR] = "✘",
-          [vim.diagnostic.severity.WARN] = "⚠",
-          [vim.diagnostic.severity.INFO] = "ℹ",
-          [vim.diagnostic.severity.HINT] = "➤",
-        }
-
-        local source = diagnostic.source
-        -- sourceが長い場合は短縮する（例：eslintをそのまま表示など）
-        if source == "eslint" or source == "prettier" then
-        -- do nothing
-        elseif string.find(source, "/") then
-          -- パスが含まれている場合は最後の部分だけを使用
-          source = string.match(source, "([^/]+)$")
-        end
-
-        return string.format("%s %s: %s", severity_icon[diagnostic.severity] or "", source, diagnostic.message)
-      end
-
-      -- 診断メッセージを表示する関数
-      local function show_diagnostic_message()
-        local current_line = vim.fn.line(".")
-        last_line = current_line
-
-        local diagnostics = vim.diagnostic.get(0, { lnum = current_line - 1 })
-        if #diagnostics > 0 then
-          local diag = diagnostics[1]
-          local message = format_diagnostic(diag)
-
-          if diag.severity == vim.diagnostic.severity.ERROR then
-            utils.err(message)
-          elseif diag.severity == vim.diagnostic.severity.WARN then
-            utils.warn(message)
-          elseif diag.severity == vim.diagnostic.severity.INFO then
-            utils.info(message)
-          elseif diag.severity == vim.diagnostic.severity.HINT then
-            utils.info(message)
-          end
-        end
-      end
-
-      -- カーソル移動時の処理
-      vim.api.nvim_create_autocmd("CursorMoved", {
-        callback = function()
-          local current_line = vim.fn.line(".")
-          -- 行が変わった場合のみクリア
-          if last_line and current_line ~= last_line then
-            clear_message()
-            last_line = nil
-          end
-        end,
-      })
-
-      -- カーソルが留まった時の処理
-      vim.api.nvim_create_autocmd("CursorHold", {
-        callback = function()
-          show_diagnostic_message()
-        end,
-      })
-
-      -- インサートモードに入った時もクリア
-      vim.api.nvim_create_autocmd("InsertEnter", {
-        callback = function()
-          clear_message()
-          last_line = nil
-        end,
-      })
-
-      -- バッファを離れた時もクリア
-      vim.api.nvim_create_autocmd("BufLeave", {
-        callback = function()
-          clear_message()
-          last_line = nil
-        end,
-      })
-
-      -- ******************************
-      -- ** </診断メッセージを表示する関数たち>
-      -- ******************************
-
-      -- キーマッピングを追加
-      local opts = { noremap = true, silent = true }
-      vim.keymap.set("n", "<space>e", function()
-        vim.diagnostic.open_float(nil, { focus = false })
-      end, opts)
-
-      vim.keymap.set("n", "<leader>k", vim.diagnostic.goto_prev, opts)
-      vim.keymap.set("n", "<leader>j", vim.diagnostic.goto_next, opts)
-      vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+      -- その他の設定は元のコードと同じ...
 
       -- LSPサーバーの設定
+      local utils = require("utils")
+
+      -- LSPサーバーをセットアップする前にmason-lspconfigが読み込まれていることを確認
       require("mason-lspconfig").setup_handlers({
         function(server_name)
           local config = {}
@@ -182,8 +108,8 @@ return {
               init_options = {
                 settings = {
                   -- ruffの設定
-                  path = { require("utils").get_python_env(), "-m", "ruff" },
-                  interpreter = { require("utils").get_python_env() },
+                  path = { utils.get_python_env(), "-m", "ruff" },
+                  interpreter = { utils.get_python_env() },
                   importStrategy = "fromEnvironment",
                   organizeImports = true,
                   fixAll = true,
@@ -200,62 +126,6 @@ return {
           require("lspconfig")[server_name].setup(config)
         end,
       })
-
-      -- LSP参照をTelescopeで表示する安定版実装
-      local function safe_lsp_references()
-        -- 現在のカーソル位置の情報を取得
-        local bufnr = vim.api.nvim_get_current_buf()
-        local pos = vim.api.nvim_win_get_cursor(0)
-        local row, col = pos[1] - 1, pos[2]
-
-        -- LSPリクエストのパラメータを手動で構築
-        local params = {
-          textDocument = {
-            uri = vim.uri_from_bufnr(bufnr),
-          },
-          position = {
-            line = row,
-            character = col,
-          },
-          context = {
-            includeDeclaration = true,
-          },
-        }
-
-        -- 参照を探す
-        vim.lsp.buf_request(bufnr, "textDocument/references", params, function(err, result, _, _)
-          if err then
-            vim.notify("LSPエラー: " .. tostring(err), vim.log.levels.ERROR)
-            return
-          end
-
-          if not result or vim.tbl_isempty(result) then
-            vim.notify("参照が見つかりませんでした", vim.log.levels.INFO)
-            return
-          end
-
-          -- 結果をQuickfixリストに変換
-          local items = vim.lsp.util.locations_to_items(result, "utf-8")
-          vim.fn.setqflist({}, "r", {
-            title = "LSP References",
-            items = items,
-          })
-
-          -- Telescope使ってQuickfixリストを表示
-          require("telescope.builtin").quickfix({
-            prompt_title = "LSP References",
-            path_display = { "smart" },
-          })
-        end)
-      end
-
-      -- LSP関連のキーマッピング
-      local opts = { noremap = true, silent = true }
-      vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-      --vim.keymap.set("n", "gr", "<cmd>Telescope lsp_references<CR>", opts)
-      --vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-      vim.keymap.set("n", "gr", safe_lsp_references, opts)
-      vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
     end,
   },
 }

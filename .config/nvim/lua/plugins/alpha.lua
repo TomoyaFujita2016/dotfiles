@@ -32,6 +32,9 @@ return {
       dashboard.section.header.opts.hl = "AlphaHeader"
       dashboard.section.buttons.opts.hl = "AlphaButtons"
       dashboard.section.footer.opts.hl = "AlphaFooter"
+
+      -- ヘッダーを緑色に設定
+      vim.api.nvim_set_hl(0, "AlphaHeader", { fg = "#5fd700" }) -- 鮮やかな緑色
       dashboard.opts.layout[1].val = 8
       return dashboard
     end,
