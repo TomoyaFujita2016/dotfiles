@@ -1,6 +1,10 @@
 return {
   "petertriho/nvim-scrollbar",
   event = { "BufReadPost", "BufNewFile" },
+  dependencies = {
+    "kevinhwang91/nvim-hlslens",
+    "lewis6991/gitsigns.nvim",
+  },
   config = function()
     require("scrollbar").setup({
       -- カスタム設定をここに追加
@@ -19,10 +23,7 @@ return {
         Misc = { color = "#8077d1" },
       },
     })
-    require("scrollbar").setup()
-    require("scrollbar.handlers.gitsigns").setup() -- GitSignsとの連携を有効化
+    require("scrollbar.handlers.gitsigns").setup()
+    require("scrollbar.handlers.search").setup()
   end,
-  dependencies = {
-    "lewis6991/gitsigns.nvim", -- オプション: GitSignsと連携する場合
-  },
 }

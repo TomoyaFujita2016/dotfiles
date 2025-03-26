@@ -34,9 +34,6 @@ return {
           render.setVirt(0, lnum - 1, col - 1, chunks, nearest)
         end,
       })
-      require("scrollbar.handlers.search").setup({
-        -- hlslens config overrides
-      })
 
       -- キーマップ設定
       local kopts = { noremap = true, silent = true }

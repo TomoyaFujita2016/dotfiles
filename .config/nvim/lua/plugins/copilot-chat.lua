@@ -24,7 +24,7 @@ return {
         return
       end
       require("CopilotChat").setup({
-        model = "claude-3.7-sonnet",
+        model = "claude-3.7-sonnet-thought",
         clear_chat_on_new_prompt = true,
         show_help = "yes",
         prompts = {
@@ -45,11 +45,13 @@ return {
             selection = select.diagnostics,
           },
           Commit = {
-            prompt = "commitize の規則に従って、変更に対するコミットメッセージを記述してください。 タイトルは最大50文字で、メッセージは72文字で折り返されるようにしてください。 メッセージ全体を gitcommit 言語のコード ブロックでラップしてください。gitdiffに存在しない内容は、混乱するためコミットメッセージに含めないでください。差分がなければ何も出力しなくて構いません。メッセージは日本語でお願いします。",
+            model = "gpt-4o",
+            prompt = "commitize の規則に従って、変更に対するコミットメッセージを記述してください。 タイトルは最大50文字で、メッセージは72文字で折り返されるようにしてください。 メッセージ全体を gitcommit 言語のコード ブロックでラップしてください。gitdiffに存在しない内容は、混乱するためコミットメッセージに含めないでください。差分がなければ何も出力しなくて構いません。メッセージは日本語でお願いします。体言止めを使ってください。それでは、commitize の規則に従ってコミットメッセージを記述してください。",
             mapping = "<leader>cc",
             description = "バディにコミットメッセージの作成をお願いする",
-            selection = select.gitdiff,
-            context = { include_context = false },
+            --selection = select.gitdiff,
+            --context = { include_context = false },
+            context = "git:staged",
             callback = function(response, _)
               local commit_message = response:match("```gitcommit\n(.-)\n```")
               if commit_message then
