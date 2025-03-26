@@ -6,13 +6,21 @@ return {
       local dashboard = require("alpha.themes.dashboard")
 
       dashboard.section.header.val = {
-        "                                                                     ",
-        " ███╗   ███╗ ██████╗ ███╗   ███╗ ██████╗ ███╗   ██╗ ██████╗  █████╗  ",
-        " ████╗ ████║██╔═══██╗████╗ ████║██╔═══██╗████╗  ██║██╔════╝ ██╔══██╗ ",
-        " ██╔████╔██║██║   ██║██╔████╔██║██║   ██║██╔██╗ ██║██║  ███╗███████║ ",
-        " ██║╚██╔╝██║██║   ██║██║╚██╔╝██║██║   ██║██║╚██╗██║██║   ██║██╔══██║ ",
-        " ██║ ╚═╝ ██║╚██████╔╝██║ ╚═╝ ██║╚██████╔╝██║ ╚████║╚██████╔╝██║  ██║ ",
-        " ╚═╝     ╚═╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝ ",
+        "                                                                                       ▒█▀▀▄                ",
+        "                                                                                     ░▒█    ██▄▄▄▄▒█▀ ▀▄    ",
+        "                                                                                     ▄▒          ░▒█    ▀▄  ",
+        " ███▄ ▄███▓ ▒█████   ███▄ ▄███▓ ▒█████   ███▄    █   ▄████  ▄▄▄                    ░▒▒                  ▀▒  ",
+        "▓██▒▀█▀ ██▒▒██▒  ██▒▓██▒▀█▀ ██▒▒██▒  ██▒ ██ ▀█   █  ██▒ ▀█▒▒████▄                 ▄▄                    ░█  ",
+        "▓██    ▓██░▒██░  ██▒▓██    ▓██░▒██░  ██▒▓██  ▀█ ██▒▒██░▄▄▄░▒██  ▀█▄              ▀       ▄▄     ▄▄       █  ",
+        "▒██    ▒██ ▒██   ██░▒██    ▒██ ▒██   ██░▓██▒  ▐▌██▒░▓█  ██▓░██▄▄▄▄██           ▒▄           ω            ▀░ ",
+        "▒██▒   ░██▒░ ████▓▒░▒██▒   ░██▒░ ████▓▒░▒██░   ▓██░░▒▓███▀▒ ▓█   ▓██▒         ▒░                      ▄▄▒█  ",
+        "░ ▒░   ░  ░░ ▒░▒░▒░ ░ ▒░   ░  ░░ ▒░▒░▒░ ░ ▒░   ▒ ▒  ░▒   ▒  ▒▒   ▓▒█░       ▀█▄                    █▀    ░█ ",
+        "░  ░      ░  ░ ▒ ▒░ ░  ░      ░  ░ ▒ ▒░ ░ ░░   ░ ▒░  ░   ░   ▒   ▒▒ ░     ▒█ ▒░                  ▄▄      █  ",
+        "░      ░   ░ ░ ░ ▒  ░      ░   ░ ░ ░ ▒     ░   ░ ░ ░ ░   ░   ░   ▒       ▒░   █▒ ▀              █      ▄▒   ",
+        "       ░       ░ ░         ░       ░ ░           ░       ░       ░  ░   ▒      ░▄█              ▒      ▀▄   ",
+        "                                                                        ▀                        ▄     ▄█   ",
+        "                                                                       ░█  ░▀▒                   ▀▒  ▒▀▀    ",
+        "                                                                         ▄▀▄▀▄▒░░░▄▄▄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▄▀▄",
       }
       dashboard.section.buttons.val = {
         dashboard.button("i", "  New file", ":ene <BAR> startinsert <CR>"),
@@ -25,6 +33,9 @@ return {
         dashboard.button("z", "󰒲  Lazy", ":Lazy<CR>"),
         dashboard.button("q", "  Quit", ":qa<CR>"),
       }
+
+      vim.api.nvim_set_hl(0, "AlphaHeader", { fg = "#98D2C0" })
+
       for _, button in ipairs(dashboard.section.buttons.val) do
         button.opts.hl = "AlphaButtons"
         button.opts.hl_shortcut = "AlphaShortcut"
@@ -33,8 +44,6 @@ return {
       dashboard.section.buttons.opts.hl = "AlphaButtons"
       dashboard.section.footer.opts.hl = "AlphaFooter"
 
-      -- ヘッダーを緑色に設定
-      vim.api.nvim_set_hl(0, "AlphaHeader", { fg = "#5fd700" }) -- 鮮やかな緑色
       dashboard.opts.layout[1].val = 8
       return dashboard
     end,

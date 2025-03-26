@@ -1,0 +1,106 @@
+return {
+  --{
+  --  "nvimdev/dashboard-nvim",
+  --  event = "VimEnter",
+  --  opts = function()
+  --    local logo = {
+  --      "                                                                     ",
+  --      " ███╗   ███╗ ██████╗ ███╗   ███╗ ██████╗ ███╗   ██╗ ██████╗  █████╗  ",
+  --      " ████╗ ████║██╔═══██╗████╗ ████║██╔═══██╗████╗  ██║██╔════╝ ██╔══██╗ ",
+  --      " ██╔████╔██║██║   ██║██╔████╔██║██║   ██║██╔██╗ ██║██║  ███╗███████║ ",
+  --      " ██║╚██╔╝██║██║   ██║██║╚██╔╝██║██║   ██║██║╚██╗██║██║   ██║██╔══██║ ",
+  --      " ██║ ╚═╝ ██║╚██████╔╝██║ ╚═╝ ██║╚██████╔╝██║ ╚████║╚██████╔╝██║  ██║ ",
+  --      " ╚═╝     ╚═╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝ ",
+  --    }
+
+  --    local opts = {
+  --      theme = "doom",
+  --      hide = {
+  --        statusline = false,
+  --        tabline = false,
+  --        winbar = false,
+  --      },
+  --      config = {
+  --        header = logo,
+  --        center = {
+  --          {
+  --            icon = "  ",
+  --            desc = "New file",
+  --            action = "ene | startinsert",
+  --            key = "i",
+  --          },
+  --          {
+  --            icon = "  ",
+  --            desc = "Find file",
+  --            action = "Telescope smart_open",
+  --            key = "f",
+  --          },
+  --          {
+  --            icon = "  ",
+  --            desc = "Restore Session",
+  --            action = "lua require('persistence').load()",
+  --            key = "r",
+  --          },
+  --          {
+  --            icon = "  ",
+  --            desc = "Recent files",
+  --            action = "Telescope oldfiles",
+  --            key = "l",
+  --          },
+  --          {
+  --            icon = "  ",
+  --            desc = "GrugFar",
+  --            action = "GrugFar",
+  --            key = "g",
+  --          },
+  --          {
+  --            icon = "  ",
+  --            desc = "Find text",
+  --            action = "Telescope live_grep",
+  --            key = "G",
+  --          },
+  --          {
+  --            icon = "  ",
+  --            desc = "Config",
+  --            action = "e $MYVIMRC",
+  --            key = "c",
+  --          },
+  --          {
+  --            icon = "󰒲  ",
+  --            desc = "Lazy",
+  --            action = "Lazy",
+  --            key = "z",
+  --          },
+  --          {
+  --            icon = "  ",
+  --            desc = "Quit",
+  --            action = "qa",
+  --            key = "q",
+  --          },
+  --        },
+  --        footer = function()
+  --          local stats = require("lazy").stats()
+  --          local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
+  --          return { "⚡ Neovim loaded " .. stats.count .. " plugins in " .. ms .. "ms" }
+  --        end,
+  --      },
+  --    }
+
+  --    -- カスタムハイライトの設定
+  --    -- 元のAlpha用ハイライトをDashboard用に設定
+  --    vim.api.nvim_create_autocmd("User", {
+  --      pattern = "LazyVimStarted",
+  --      callback = function()
+  --        vim.api.nvim_set_hl(0, "DashboardHeader", { fg = "#98D2C0" })
+  --        vim.api.nvim_set_hl(0, "DashboardIcon", { fg = "#98D2C0" })
+  --        vim.api.nvim_set_hl(0, "DashboardKey", { fg = "#E5C07B" }) -- AlphaShortcutに相当
+  --        vim.api.nvim_set_hl(0, "DashboardDesc", { fg = "#ABB2BF" }) -- AlphaButtonsに相当
+  --        vim.api.nvim_set_hl(0, "DashboardFooter", { fg = "#98D2C0" })
+  --      end,
+  --    })
+
+  --    return opts
+  --  end,
+  --  dependencies = { "nvim-tree/nvim-web-devicons" },
+  --},
+}

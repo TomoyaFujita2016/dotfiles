@@ -11,6 +11,11 @@ return {
           desc = "Toggle pin",
         },
         {
+          "<leader>bl",
+          "<Cmd>BufferLineCloseRight<CR><Cmd>BufferLineCloseLeft<CR>",
+          desc = "Close all buffers except current and pinned",
+        },
+        {
           "<leader>bP",
           "<Cmd>BufferLineGroupClose ungrouped<CR>",
           desc = "Delete non-pinned buffers",
