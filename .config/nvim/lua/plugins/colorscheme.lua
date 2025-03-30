@@ -1,17 +1,24 @@
 return {
-  ---- 100年前からbadwolf
+  ---- ???? 100年前からbadwolf ????
+  --{
+  --  "sjl/badwolf",
+  --  lazy = false,
+  --  priority = 1000,
+  --  config = function()
+  --    vim.cmd([[colorscheme badwolf]])
+  --  end,
+  --},
+  --{
+  --  "nyoom-engineering/oxocarbon.nvim",
+  --  lazy = false,
+  --  priority = 1000,
+  --},
   {
-    "sjl/badwolf",
+    "savq/melange-nvim",
     lazy = false,
     priority = 1000,
     config = function()
-      vim.cmd([[colorscheme badwolf]])
+      vim.cmd([[colorscheme melange]])
     end,
   },
-  --{ "catppuccin/nvim", name = "catppuccin", priority = 1000 , lazy = false ,
-  --  config = function()
-  --    require("catppuccin").setup()
-  --    vim.cmd.colorscheme "catppuccin"
-  --  end,
-  --},
 }
