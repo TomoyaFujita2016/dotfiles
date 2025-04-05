@@ -45,18 +45,14 @@ return {
         },
         highlight = {
           enable = true, -- 基本的に有効に
-          --disable = function(lang, buf)
-          --  -- Avanteファイルはカスタムハイライトを使用
-          --  local ft = vim.api.nvim_buf_get_option(buf, "filetype")
-          --  if ft == "Avante" or ft == "avante" then
-          --    return false
-          --  end
-          --  -- その他のファイルタイプは通常のハイライトを使用
-          --  return false
-          --end,
-          --additional_vim_regex_highlighting = {
-          --  "Avante", -- 大文字のAvanteに合わせる
-          --},
+          disable = function(lang, buf)
+            -- avanteファイル以外はハイライトを無効にする
+            local ft = vim.api.nvim_buf_get_option(buf, "filetype")
+            return ft ~= "Avante" and ft ~= "avante"
+          end,
+          additional_vim_regex_highlighting = {
+            "Avante", -- 大文字のAvanteに合わせる
+          },
         },
         indent = {
           enable = true,

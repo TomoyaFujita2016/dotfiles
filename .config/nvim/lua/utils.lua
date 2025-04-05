@@ -41,20 +41,26 @@ function M.get_python_env()
     return cached_python_env
   end
 
-  -- 1. Poetry
+  -- 1. プロジェクトルートの.venv（pyproject.tomlがある階層）
+  local project_root = vim.fn.finddir(".git/..", vim.fn.expand("%:p:h") .. ";")
+  if project_root ~= "" then
+    local pyproject_path = project_root .. "/pyproject.toml"
+    if vim.fn.filereadable(pyproject_path) == 1 then
+      local venv_path = project_root .. "/.venv"
+      if vim.fn.isdirectory(venv_path) == 1 then
+        cached_python_env = venv_path .. "/bin/python"
+        cached_env_info = "Project root .venv detected: " .. venv_path
+        M.info(cached_env_info)
+        return cached_python_env
+      end
+    end
+  end
+
+  -- 2. Poetry
   local poetry_path = vim.fn.system("poetry env info -p 2>/dev/null"):gsub("\n", "")
   if poetry_path ~= "" then
     cached_python_env = poetry_path .. "/bin/python"
     cached_env_info = "Poetry environment detected: " .. poetry_path
-    M.info(cached_env_info)
-    return cached_python_env
-  end
-
-  -- 2. Pyenv virtualenv
-  local pyenv_version = vim.fn.system("pyenv version-name 2>/dev/null"):gsub("\n", "")
-  if pyenv_version ~= "" and pyenv_version ~= "system" then
-    cached_python_env = vim.fn.expand("~/.pyenv/versions/" .. pyenv_version .. "/bin/python")
-    cached_env_info = "Pyenv environment detected: " .. pyenv_version
     M.info(cached_env_info)
     return cached_python_env
   end
@@ -68,17 +74,20 @@ function M.get_python_env()
     return cached_python_env
   end
 
+  -- 4. Pyenv virtualenv
+  local pyenv_version = vim.fn.system("pyenv version-name 2>/dev/null"):gsub("\n", "")
+  if pyenv_version ~= "" and pyenv_version ~= "system" then
+    cached_python_env = vim.fn.expand("~/.pyenv/versions/" .. pyenv_version .. "/bin/python")
+    cached_env_info = "Pyenv environment detected: " .. pyenv_version
+    M.info(cached_env_info)
+    return cached_python_env
+  end
+
   -- fallback: system's Python
   cached_python_env = "python"
   cached_env_info = "No Python environment detected. Using system Python."
   M.warn(cached_env_info)
   return cached_python_env
-end
-
--- 環境情報をクリアする関数
-function M.clear_python_env_cache()
-  cached_python_env = nil
-  cached_env_info = nil
 end
 
 return M

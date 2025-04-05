@@ -9,7 +9,7 @@ return {
       copilot = {
         endpoint = "https://api.githubcopilot.com",
         --model = "claude-3.7-sonnet-thought",
-        model = "claude-3.5-sonnet",
+        model = "claude-3.7-sonnet",
         timeout = 30000,
         temperature = 0,
         max_tokens = 8192,
