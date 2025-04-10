@@ -3,25 +3,7 @@ return {
     "yetone/avante.nvim",
     event = "VeryLazy",
     version = false, -- Never set this value to "*"! Never!
-    opts = {
-      provider = "copilot", -- copilotを使用
-      auto_suggestions_provider = "copilot",
-      copilot = {
-        endpoint = "https://api.githubcopilot.com",
-        --model = "claude-3.7-sonnet-thought",
-        model = "claude-3.7-sonnet",
-        timeout = 30000,
-        temperature = 0,
-        max_tokens = 8192,
-      },
-      hints = { enabled = false },
-      windows = {
-        width = 40,
-        sidebar_header = {
-          enabled = true,
-        },
-      },
-    },
+    opts = {},
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
     build = "make",
     -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
@@ -61,5 +43,42 @@ return {
         ft = { "markdown", "Avante" },
       },
     },
+    config = function(_, opts)
+      require("avante").setup({
+        provider = "copilot", -- copilotを使用
+        auto_suggestions_provider = "copilot",
+        copilot = {
+          endpoint = "https://api.githubcopilot.com",
+          --model = "claude-3.7-sonnet-thought",
+          model = "claude-3.7-sonnet",
+          timeout = 30000,
+          temperature = 0,
+          max_tokens = 8192,
+        },
+        hints = { enabled = false },
+        windows = {
+          width = 40,
+          sidebar_header = {
+            enabled = true,
+          },
+        },
+        extensions = {
+          avante = {
+            make_slash_commands = true, -- make /slash commands from MCP server prompts
+          },
+        },
+
+        system_prompt = function()
+          local hub = require("mcphub").get_hub_instance()
+          return hub:get_active_servers_prompt()
+        end,
+        -- The custom_tools type supports both a list and a function that returns a list. Using a function here prevents requiring mcphub before it's loaded
+        custom_tools = function()
+          return {
+            require("mcphub.extensions.avante").mcp_tool(),
+          }
+        end,
+      })
+    end,
   },
 }
