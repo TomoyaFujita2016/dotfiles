@@ -19,6 +19,8 @@ return {
       "ibhagwan/fzf-lua", -- for file_selector provider fzf
       "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
       "zbirenbaum/copilot.lua", -- for providers='copilot'
+      "ravitemer/mcphub.nvim",
+      "nvim-lua/plenary.nvim", -- Required for Job and HTTP requests in mcp_hub
       {
         -- support for image pasting
         "HakonHarnes/img-clip.nvim",
@@ -54,6 +56,18 @@ return {
           timeout = 30000,
           temperature = 0,
           max_tokens = 8192,
+          disabled_tools = {
+            "list_files",
+            "search_files",
+            "read_file",
+            "create_file",
+            "rename_file",
+            "delete_file",
+            "create_dir",
+            "rename_dir",
+            "delete_dir",
+            "bash",
+          },
         },
         hints = { enabled = false },
         windows = {
