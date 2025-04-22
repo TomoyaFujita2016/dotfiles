@@ -27,7 +27,7 @@ TERM="xterm-256color"
 
 
 [font]
-size = 9
+size = 12
 
 [font.bold]
 family = "Hack Nerd Font"
@@ -40,6 +40,7 @@ style = "Regular"
 [window]
 startup_mode="Maximized"
 decorations="none"
+opacity = 0.9
 
 
 [window.padding]

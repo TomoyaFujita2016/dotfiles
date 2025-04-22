@@ -5,7 +5,7 @@ return {
       "kevinhwang91/promise-async",
       "neovim/nvim-lspconfig",
     },
-    event = "BufReadPost",
+    event = "VeryLazy",
     keys = {
       {
         "zR",
