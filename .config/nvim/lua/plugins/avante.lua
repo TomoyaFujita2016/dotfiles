@@ -56,18 +56,18 @@ return {
           timeout = 30000,
           temperature = 0,
           max_tokens = 8192,
-          disabled_tools = {
-            "list_files",
-            "search_files",
-            "read_file",
-            "create_file",
-            "rename_file",
-            "delete_file",
-            "create_dir",
-            "rename_dir",
-            "delete_dir",
-            "bash",
-          },
+          --disabled_tools = {
+          --  "list_files",
+          --  "search_files",
+          --  "read_file",
+          --  "create_file",
+          --  "rename_file",
+          --  "delete_file",
+          --  "create_dir",
+          --  "rename_dir",
+          --  "delete_dir",
+          --  "bash",
+          --},
         },
         hints = { enabled = false },
         windows = {
@@ -76,22 +76,23 @@ return {
             enabled = true,
           },
         },
-        extensions = {
-          avante = {
-            make_slash_commands = true, -- make /slash commands from MCP server prompts
-          },
-        },
+        --extensions = {
+        --  avante = {
+        --    make_slash_commands = true, -- make /slash commands from MCP server prompts
+        --  },
+        --},
 
-        system_prompt = function()
-          local hub = require("mcphub").get_hub_instance()
-          return hub:get_active_servers_prompt()
-        end,
+        --system_prompt = function()
+        --  local hub = require("mcphub").get_hub_instance()
+        --  return hub:get_active_servers_prompt()
+        ---end,
+
         -- The custom_tools type supports both a list and a function that returns a list. Using a function here prevents requiring mcphub before it's loaded
-        custom_tools = function()
-          return {
-            require("mcphub.extensions.avante").mcp_tool(),
-          }
-        end,
+        --custom_tools = function()
+        --  return {
+        --    require("mcphub.extensions.avante").mcp_tool(),
+        --  }
+        --end,
       })
     end,
   },

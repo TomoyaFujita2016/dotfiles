@@ -21,6 +21,25 @@ return {
           desc = "Delete non-pinned buffers",
         },
         {
+          "<leader>bo",
+          function()
+            -- 現在表示されているバッファのリストを取得
+            local visible_buffers = {}
+            for _, win in pairs(vim.api.nvim_list_wins()) do
+              local buf = vim.api.nvim_win_get_buf(win)
+              visible_buffers[buf] = true
+            end
+
+            -- 表示されていないバッファを閉じる
+            for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+              if vim.api.nvim_buf_is_loaded(buf) and not visible_buffers[buf] then
+                vim.api.nvim_buf_delete(buf, { force = false })
+              end
+            end
+          end,
+          desc = "Close all buffers except visible ones",
+        },
+        {
           "gb",
           function()
             if vim.v.count == 0 then
