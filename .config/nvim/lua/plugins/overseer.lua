@@ -8,8 +8,8 @@ return {
       },
     },
     keys = {
-      { "<space>r", "<CMD>OverseerRun<CR>" },
-      { "<space>R", "<CMD>OverseerToggle<CR>" },
+      { "<leader>R", "<CMD>OverseerRun<CR>" },
+      { "<leader>rR", "<CMD>OverseerToggle<CR>" },
     },
     config = function(_, opts)
       local overseer = require("overseer")

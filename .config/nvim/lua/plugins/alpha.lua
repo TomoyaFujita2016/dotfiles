@@ -23,8 +23,8 @@ return {
         "                                                                         ▄▀▄▀▄▒░░░▄▄▄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▄▀▄",
       }
       dashboard.section.buttons.val = {
-        dashboard.button("i", "  New file", ":ene <BAR> startinsert <CR>"),
         dashboard.button("f", "  Find file", ":Telescope smart_open <CR>"),
+        dashboard.button("i", "  New file", ":ene <BAR> startinsert <CR>"),
         dashboard.button("r", "  Restore Session", [[:lua require("persistence").load() <CR>]]),
         dashboard.button("l", "  Recent files", ":Telescope oldfiles <CR>"),
         dashboard.button("g", "  GrugFar", ":GrugFar <CR>"),

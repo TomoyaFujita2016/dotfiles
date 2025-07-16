@@ -28,22 +28,22 @@ return {
         clear_chat_on_new_prompt = true,
         show_help = "yes",
         prompts = {
-          Optimize = {
-            prompt = "/COPILOT_REFACTOR 選択したコードを最適化し、パフォーマンスと可読性を向上させてください。説明は日本語でお願いします。",
-            mapping = "<leader>co",
-            description = "バディにコードの最適化をお願いする",
-          },
-          Tests = {
-            prompt = "/COPILOT_TESTS 選択したコードの詳細なユニットテストを書いてください。説明は日本語でお願いします。",
-            mapping = "<leader>ct",
-            description = "バディにコードのテストコード作成をお願いする",
-          },
-          FixDiagnostic = {
-            prompt = "コードの診断結果に従って問題を修正してください。修正内容の説明は日本語でお願いします。",
-            mapping = "<leader>cx",
-            description = "バディにコードの静的解析結果に基づいた修正をお願いする",
-            selection = select.diagnostics,
-          },
+          --Optimize = {
+          --  prompt = "/COPILOT_REFACTOR 選択したコードを最適化し、パフォーマンスと可読性を向上させてください。説明は日本語でお願いします。",
+          --  mapping = "<leader>co",
+          --  description = "バディにコードの最適化をお願いする",
+          --},
+          --Tests = {
+          --  prompt = "/COPILOT_TESTS 選択したコードの詳細なユニットテストを書いてください。説明は日本語でお願いします。",
+          --  mapping = "<leader>ct",
+          --  description = "バディにコードのテストコード作成をお願いする",
+          --},
+          --FixDiagnostic = {
+          --  prompt = "コードの診断結果に従って問題を修正してください。修正内容の説明は日本語でお願いします。",
+          --  mapping = "<leader>cx",
+          --  description = "バディにコードの静的解析結果に基づいた修正をお願いする",
+          --  selection = select.diagnostics,
+          --},
           Commit = {
             model = "claude-3.5-sonnet",
             prompt = "commitize の規則に従って、変更に対するコミットメッセージを記述してください。 タイトルは最大50文字で、メッセージは72文字で折り返されるようにしてください。 メッセージ全体を gitcommit 言語のコード ブロックでラップしてください。gitdiffに存在しない内容は、混乱するためコミットメッセージに含めないでください。差分がなければ何も出力しなくて構いません。メッセージは日本語でお願いします。体言止めを使ってください。それでは、commitize の規則に従ってコミットメッセージを記述してください。",

@@ -1,99 +1,118 @@
 return {
-  {
-    "yetone/avante.nvim",
-    event = "VeryLazy",
-    version = false, -- Never set this value to "*"! Never!
-    opts = {},
-    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-    build = "make",
-    -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      "stevearc/dressing.nvim",
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-      --- The below dependencies are optional,
-      "echasnovski/mini.pick", -- for file_selector provider mini.pick
-      "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
-      "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
-      "ibhagwan/fzf-lua", -- for file_selector provider fzf
-      "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-      "zbirenbaum/copilot.lua", -- for providers='copilot'
-      "ravitemer/mcphub.nvim",
-      "nvim-lua/plenary.nvim", -- Required for Job and HTTP requests in mcp_hub
-      {
-        -- support for image pasting
-        "HakonHarnes/img-clip.nvim",
-        event = "VeryLazy",
-        opts = {
-          -- recommended settings
-          default = {
-            embed_image_as_base64 = true,
-            prompt_for_file_name = false,
-            drag_and_drop = {
-              insert_mode = true,
-            },
-          },
-        },
-      },
-      {
-        -- Make sure to set this up properly if you have lazy=true
-        "MeanderingProgrammer/render-markdown.nvim",
-        opts = {
-          file_types = { "markdown", "Avante" },
-        },
-        ft = { "markdown", "Avante" },
-      },
-    },
-    config = function(_, opts)
-      require("avante").setup({
-        provider = "copilot", -- copilotを使用
-        auto_suggestions_provider = "copilot",
-        copilot = {
-          endpoint = "https://api.githubcopilot.com",
-          --model = "claude-3.7-sonnet-thought",
-          model = "claude-3.7-sonnet",
-          timeout = 30000,
-          temperature = 0,
-          max_tokens = 8192,
-          --disabled_tools = {
-          --  "list_files",
-          --  "search_files",
-          --  "read_file",
-          --  "create_file",
-          --  "rename_file",
-          --  "delete_file",
-          --  "create_dir",
-          --  "rename_dir",
-          --  "delete_dir",
-          --  "bash",
-          --},
-        },
-        hints = { enabled = false },
-        windows = {
-          width = 40,
-          sidebar_header = {
-            enabled = true,
-          },
-        },
-        --extensions = {
-        --  avante = {
-        --    make_slash_commands = true, -- make /slash commands from MCP server prompts
-        --  },
-        --},
+  --{
+  --  "yetone/avante.nvim",
+  --  event = "VeryLazy",
+  --  version = false, -- Never set this value to "*"! Never!
 
-        --system_prompt = function()
-        --  local hub = require("mcphub").get_hub_instance()
-        --  return hub:get_active_servers_prompt()
-        ---end,
+  --  -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+  --  build = "make",
+  --  -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
+  --  dependencies = {
+  --    "nvim-treesitter/nvim-treesitter",
+  --    "stevearc/dressing.nvim",
+  --    "nvim-lua/plenary.nvim",
+  --    "MunifTanjim/nui.nvim",
+  --    --- The below dependencies are optional,
+  --    "echasnovski/mini.pick", -- for file_selector provider mini.pick
+  --    "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
+  --    "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
+  --    "ibhagwan/fzf-lua", -- for file_selector provider fzf
+  --    "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+  --    "zbirenbaum/copilot.lua", -- for providers='copilot'
+  --    "ravitemer/mcphub.nvim",
+  --    "nvim-lua/plenary.nvim", -- Required for Job and HTTP requests in mcp_hub
+  --    --{
+  --    --  -- support for image pasting
+  --    --  "HakonHarnes/img-clip.nvim",
+  --    --  event = "VeryLazy",
+  --    --  opts = {
+  --    --    -- recommended settings
+  --    --    default = {
+  --    --      embed_image_as_base64 = true,
+  --    --      prompt_for_file_name = false,
+  --    --      drag_and_drop = {
+  --    --        insert_mode = true,
+  --    --      },
+  --    --    },
+  --    --  },
+  --    --},
+  --    {
+  --      -- Make sure to set this up properly if you have lazy=true
+  --      "MeanderingProgrammer/render-markdown.nvim",
+  --      opts = {
+  --        file_types = { "markdown", "Avante" },
+  --      },
+  --      ft = { "markdown", "Avante" },
+  --    },
+  --  },
+  --  opts = {
+  --    behaivior = {
+  --      enable_cursor_planning_mode = true, -- enable cursor planning mode!
+  --    },
+  --    copilot = {
+  --      endpoint = "https://api.githubcopilot.com",
+  --      -- model = "claude-3.7-sonnet-thought",
+  --      model = "claude-3.5-sonnet",
+  --      -- model = "claude-3.7-sonnet",
+  --      timeout = 30000,
+  --      temperature = 0,
+  --      max_tokens = 8192,
+  --      disabled_tools = {
+  --        --"list_files",
+  --        --"search_files",
+  --        --  "read_file",
+  --        --  "create_file",
+  --        --  "rename_file",
+  --        --  "delete_file",
+  --        --  "create_dir",
+  --        --  "rename_dir",
+  --        --  "delete_dir",
+  --        -- "bash",
+  --      },
+  --    },
+  --    providers = {
+  --      copilot_sonnet = {
+  --        provider = "copilot",
+  --        endpoint = "https://api.githubcopilot.com",
+  --        model = "claude-3.7-sonnet",
+  --        label = "Copilot Claude 3.7 Sonnet",
+  --        __inherited_from = "copilot",
+  --      },
+  --      copilot_gpt4o = {
+  --        provider = "copilot",
+  --        endpoint = "https://api.githubcopilot.com",
+  --        model = "gpt-4o",
+  --        label = "Copilot GPT-4o",
+  --        __inherited_from = "copilot",
+  --      },
+  --    },
+  --    provider = "copilot_gpt4o", -- copilotを使用
+  --    auto_suggestions_provider = "copilot_gpt4o",
+  --    cursor_applying_provider = "copilot_gpt4o",
+  --    hints = { enabled = false },
+  --    windows = {
+  --      width = 40,
+  --      sidebar_header = {
+  --        enabled = true,
+  --      },
+  --    },
+  --    --extensions = {
+  --    --  avante = {
+  --    --    make_slash_commands = true, -- make /slash commands from MCP server prompts
+  --    --  },
+  --    --},
 
-        -- The custom_tools type supports both a list and a function that returns a list. Using a function here prevents requiring mcphub before it's loaded
-        --custom_tools = function()
-        --  return {
-        --    require("mcphub.extensions.avante").mcp_tool(),
-        --  }
-        --end,
-      })
-    end,
-  },
+  --    --system_prompt = function()
+  --    --  local hub = require("mcphub").get_hub_instance()
+  --    --  return hub:get_active_servers_prompt()
+  --    ---end,
+
+  --    -- The custom_tools type supports both a list and a function that returns a list. Using a function here prevents requiring mcphub before it's loaded
+  --    --custom_tools = function()
+  --    --  return {
+  --    --    require("mcphub.extensions.avante").mcp_tool(),
+  --    --  }
+  --    --end,
+  --  },
+  --},
 }

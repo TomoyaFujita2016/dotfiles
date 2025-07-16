@@ -3,20 +3,34 @@ return {
   -- Mason
   {
     "williamboman/mason.nvim",
-    version = "v1.10.0",
-    build = ":MasonUpdate",
+    lazy = false,
+    priority = 100,
     config = function()
-      require("mason").setup()
+      require("mason").setup({
+        ui = {
+          icons = {
+            package_installed = "✓",
+            package_pending = "➜",
+            package_uninstalled = "✗",
+          },
+        },
+      })
     end,
   },
 
   -- Mason-lspconfig: MasonとLSPの連携
   {
     "williamboman/mason-lspconfig.nvim",
+    lazy = false,
     dependencies = {
       "williamboman/mason.nvim",
-      "neovim/nvim-lspconfig",
     },
+    config = function()
+      require("mason-lspconfig").setup({
+        ensure_installed = {},
+        automatic_installation = false,
+      })
+    end,
   },
 
   -- LSP設定
@@ -157,50 +171,60 @@ return {
       vim.keymap.set("n", "<leader>j", vim.diagnostic.goto_next, opts)
       vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
 
-      -- LSPサーバーの設定
-      require("mason-lspconfig").setup_handlers({
-        function(server_name)
-          local config = {}
+      -- LSPサーバーの手動設定
+      local lspconfig = require("lspconfig")
+      local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-          -- Pythonの場合の特別な設定
-          if server_name == "pyright" then
-            config = {
-              capabilities = require("cmp_nvim_lsp").default_capabilities(),
+      -- インストールされているLSPサーバーを自動的に設定
+      local mason_lspconfig_ok, mason_lspconfig = pcall(require, "mason-lspconfig")
+      if not mason_lspconfig_ok then
+        vim.notify("mason-lspconfig not available", vim.log.levels.WARN)
+        return
+      end
+
+      local installed_servers = mason_lspconfig.get_installed_servers()
+
+      for _, server_name in ipairs(installed_servers) do
+        local config = {}
+
+        -- Pythonの場合の特別な設定
+        if server_name == "pyright" then
+          config = {
+            capabilities = capabilities,
+            settings = {
+              python = {
+                analysis = {
+                  autoSearchPaths = true,
+                  useLibraryCodeForTypes = true,
+                  diagnosticMode = "workspace",
+                },
+                pythonPath = utils.get_python_env(),
+              },
+            },
+          }
+        elseif server_name == "ruff" then
+          config = {
+            capabilities = capabilities,
+            init_options = {
               settings = {
-                python = {
-                  analysis = {
-                    autoSearchPaths = true,
-                    useLibraryCodeForTypes = true,
-                    diagnosticMode = "workspace",
-                  },
-                  pythonPath = utils.get_python_env(),
-                },
+                -- ruffの設定
+                path = { utils.get_python_env(), "-m", "ruff" },
+                interpreter = { utils.get_python_env() },
+                importStrategy = "fromEnvironment",
+                organizeImports = true,
+                fixAll = true,
               },
-            }
-          elseif server_name == "ruff" then
-            config = {
-              capabilities = require("cmp_nvim_lsp").default_capabilities(),
-              init_options = {
-                settings = {
-                  -- ruffの設定
-                  path = { require("utils").get_python_env(), "-m", "ruff" },
-                  interpreter = { require("utils").get_python_env() },
-                  importStrategy = "fromEnvironment",
-                  organizeImports = true,
-                  fixAll = true,
-                },
-              },
-            }
-          else
-            -- 他のLSPサーバーの場合はデフォルト設定
-            config = {
-              capabilities = require("cmp_nvim_lsp").default_capabilities(),
-            }
-          end
+            },
+          }
+        else
+          -- 他のLSPサーバーの場合はデフォルト設定
+          config = {
+            capabilities = capabilities,
+          }
+        end
 
-          require("lspconfig")[server_name].setup(config)
-        end,
-      })
+        lspconfig[server_name].setup(config)
+      end
 
       -- LSP参照をTelescopeで表示する安定版実装
       local function safe_lsp_references()
