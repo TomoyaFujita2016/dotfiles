@@ -29,6 +29,7 @@
   "mcphub.nvim": { "branch": "main", "commit": "6f1ee64faacd549d48517a7978c335053d8f9cd2" },
   "mini.base16": { "branch": "main", "commit": "2eb2d2b889a8c861d1a66ec651bd0edb417d5c7f" },
   "mini.nvim": { "branch": "main", "commit": "088d67751584e4168f35bca89bad70ada7ea4636" },
+  "neoscroll.nvim": { "branch": "master", "commit": "f957373912e88579e26fdaea4735450ff2ef5c9c" },
   "nvim-cmp": { "branch": "main", "commit": "b5311ab3ed9c846b585c0c15b7559be131ec4be9" },
   "nvim-colorizer.lua": { "branch": "master", "commit": "a065833f35a3a7cc3ef137ac88b5381da2ba302e" },
   "nvim-hlslens": { "branch": "main", "commit": "1e650c136f9f9d5fefe34947ad27c80010d3321f" },
