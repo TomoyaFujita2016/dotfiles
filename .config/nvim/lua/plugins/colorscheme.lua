@@ -8,17 +8,145 @@ return {
       vim.cmd([[colorscheme badwolf]])
     end,
   },
+
+  --morhetz/gruvbox
+  --{
+  --  "morhetz/gruvbox",
+  --  lazy = false,
+  --  priority = 1000,
+  --  config = function()
+  --    vim.cmd([[colorscheme gruvbox]])
+  --  end,
+  --},
   --{
   --  "nyoom-engineering/oxocarbon.nvim",
   --  lazy = false,
   --  priority = 1000,
   --},
-  --{
-  --  "savq/melange-nvim",
-  --  lazy = false,
-  --  priority = 1000,
-  --  config = function()
-  --    vim.cmd([[colorscheme melange]])
-  --  end,
-  --},
+  -- {
+  --   "savq/melange-nvim",
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     vim.cmd([[colorscheme melange]])
+  --   end,
+  -- },
+  -- everforest
+  -- {
+  --   "sainnhe/everforest",
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     vim.cmd([[colorscheme everforest]])
+  --   end,
+  -- },
+
+  -- {
+  --   "catppuccin/nvim",
+  --   name = "catppuccin",
+  --   priority = 1000,
+  --   config = function()
+  --     require("catppuccin").setup({
+  --       flavour = "frappe", -- latte, frappe, macchiato, mocha
+  --       transparent_background = false,
+  --       show_end_of_buffer = false,
+  --       term_colors = false,
+  --       dim_inactive = {
+  --         enabled = false,
+  --         shade = "dark",
+  --         percentage = 0.15,
+  --       },
+  --       no_italic = false,
+  --       no_bold = false,
+  --       no_underline = false,
+  --       styles = {
+  --         comments = { "italic" },
+  --         conditionals = { "italic" },
+  --         loops = {},
+  --         functions = {},
+  --         keywords = {},
+  --         strings = {},
+  --         variables = {},
+  --         numbers = {},
+  --         booleans = {},
+  --         properties = {},
+  --         types = {},
+  --         operators = {},
+  --       },
+  --       color_overrides = {
+  --         -- 全フレーバー共通のカラーオーバーライド
+  --         all = {
+  --           -- text = "#ffffff",
+  --           base = "#111111", -- リッチブラック (背景)
+  --           mantle = "#111111", -- より深い黒 (サイドバーなど)
+  --           crust = "#111111", -- 最も深い黒 (ステータスラインなど)
+  --         },
+  --         -- 特定フレーバーのカラーオーバーライド
+  --         mocha = {
+  --           -- base = "#000000",
+  --           -- mantle = "#000000",
+  --           -- crust = "#000000",
+  --         },
+  --       },
+  --       highlight_overrides = {
+  --         -- 全フレーバー共通のハイライトオーバーライド
+  --         all = function(colors)
+  --           return {
+  --             -- NormalFloat = { bg = colors.none },
+  --             -- CursorLine = { bg = colors.surface0 },
+  --             -- Comment = { fg = colors.overlay1, style = { "italic" } },
+  --           }
+  --         end,
+  --         -- 特定フレーバーのハイライトオーバーライド
+  --         mocha = function(colors)
+  --           return {
+  --             -- Comment = { fg = colors.flamingo },
+  --           }
+  --         end,
+  --       },
+  --       integrations = {
+  --         cmp = true,
+  --         gitsigns = true,
+  --         nvimtree = true,
+  --         treesitter = true,
+  --         notify = false,
+  --         mini = {
+  --           enabled = true,
+  --           indentscope_color = "",
+  --         },
+  --         telescope = {
+  --           enabled = true,
+  --           -- style = "nvchad"
+  --         },
+  --         native_lsp = {
+  --           enabled = true,
+  --           virtual_text = {
+  --             errors = { "italic" },
+  --             hints = { "italic" },
+  --             warnings = { "italic" },
+  --             information = { "italic" },
+  --           },
+  --           underlines = {
+  --             errors = { "underline" },
+  --             hints = { "underline" },
+  --             warnings = { "underline" },
+  --             information = { "underline" },
+  --           },
+  --           inlay_hints = {
+  --             background = true,
+  --           },
+  --         },
+  --       },
+  --     })
+  --     vim.cmd([[colorscheme catppuccin]])
+  --   end,
+  -- },
+  --- 'jacoborus/tender.vim'
+  -- {
+  --   "jacoborus/tender.vim",
+  --   priority = 1000,
+  --   config = function()
+  --     vim.cmd([[colorscheme tender]])
+  --   end,
+  -- },
 }
