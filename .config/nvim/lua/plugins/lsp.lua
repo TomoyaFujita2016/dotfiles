@@ -223,6 +223,11 @@ return {
       local installed_servers = mason_lspconfig.get_installed_servers()
 
       for _, server_name in ipairs(installed_servers) do
+        -- styluaはフォーマッターなのでスキップ
+        if server_name == "stylua" then
+          goto continue
+        end
+
         local config = {}
 
         -- Pythonの場合の特別な設定
@@ -275,6 +280,8 @@ return {
         end
 
         lspconfig[server_name].setup(config)
+
+        ::continue::
       end
 
       -- LSP参照をTelescopeで表示する安定版実装
