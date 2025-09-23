@@ -175,38 +175,34 @@ return {
       vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
 
       -- LSPサーバーの手動設定
-      local lspconfig = require("lspconfig")
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
       -- pyreflyのカスタム設定を追加
-      local configs = require("lspconfig.configs")
-      if not configs.pyrefly then
-        configs.pyrefly = {
-          default_config = {
-            cmd = function()
-              -- Python環境に応じてpyreflyのパスを決定
-              local python_path = utils.get_python_env()
-              local python_dir = vim.fn.fnamemodify(python_path, ":h")
-              local pyrefly_path = python_dir .. "/pyrefly"
-              
-              -- まず環境のpyreflyを試す
-              if vim.fn.executable(pyrefly_path) == 1 then
-                return { pyrefly_path, "lsp" }
-              end
-              
-              -- Masonのpyreflyを使用
-              return { vim.fn.expand("~/.local/share/nvim/mason/bin/pyrefly"), "lsp" }
-            end,
-            filetypes = { "python" },
-            root_dir = lspconfig.util.root_pattern("pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", "Pipfile", ".git"),
-            single_file_support = true,
-            settings = {
-              python = {
-                analysis = {
-                  autoSearchPaths = true,
-                  useLibraryCodeForTypes = true,
-                  diagnosticMode = "workspace",
-                },
+      if not vim.lsp.config.pyrefly then
+        vim.lsp.config.pyrefly = {
+          cmd = function()
+            -- Python環境に応じてpyreflyのパスを決定
+            local python_path = utils.get_python_env()
+            local python_dir = vim.fn.fnamemodify(python_path, ":h")
+            local pyrefly_path = python_dir .. "/pyrefly"
+
+            -- まず環境のpyreflyを試す
+            if vim.fn.executable(pyrefly_path) == 1 then
+              return { pyrefly_path, "lsp" }
+            end
+
+            -- Masonのpyreflyを使用
+            return { vim.fn.expand("~/.local/share/nvim/mason/bin/pyrefly"), "lsp" }
+          end,
+          filetypes = { "python" },
+          root_dir = vim.fs.root(0, { "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", "Pipfile", ".git" }),
+          single_file_support = true,
+          settings = {
+            python = {
+              analysis = {
+                autoSearchPaths = true,
+                useLibraryCodeForTypes = true,
+                diagnosticMode = "workspace",
               },
             },
           },
@@ -279,7 +275,7 @@ return {
           }
         end
 
-        lspconfig[server_name].setup(config)
+        vim.lsp.enable(server_name, config)
 
         ::continue::
       end
