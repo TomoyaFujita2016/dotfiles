@@ -54,7 +54,23 @@ return {
             --context = { include_context = false },
             context = "git:staged",
             callback = function(response, _)
-              local commit_message = response:match("```gitcommit\n(.-)\n```")
+              if not response then
+                vim.notify("No response received from Copilot", "warn")
+                return
+              end
+
+              -- responseがテーブルの場合、contentフィールドを取得
+              local response_text
+              if type(response) == "string" then
+                response_text = response
+              elseif type(response) == "table" and response.content then
+                response_text = response.content
+              else
+                vim.notify("Unexpected response format from Copilot", "warn")
+                return
+              end
+
+              local commit_message = response_text:match("```gitcommit\n(.-)\n```")
               if commit_message then
                 vim.fn.setreg("+", commit_message)
                 vim.notify("Commit message copied to clipboard!")
