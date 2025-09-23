@@ -13,24 +13,25 @@ return {
     },
     opts = {
       timeout = 3000,
-      -- レンダラーを明示的に指定
+      -- 最小限の設定でエラーを回避
       render = "default",
-      -- 以下の行を追加
       stages = "fade",
-      max_height = function()
-        return math.floor(vim.o.lines * 0.75)
-      end,
-      max_width = function()
-        return math.floor(vim.o.columns * 0.75)
-      end,
-      -- これを追加
-      on_open = function(win)
-        vim.api.nvim_win_set_config(win, { zindex = 100 })
-      end,
     },
     config = function(_, opts)
       require("notify").setup(opts)
-      vim.notify = require("notify")
+
+      -- replace=true の問題を修正
+      local original_notify = require("notify")
+      vim.notify = function(msg, level, opts)
+        -- opts が replace=true を含む場合、安全に処理
+        if opts and opts.replace == true then
+          -- replace を削除して新しい通知として表示
+          local safe_opts = vim.deepcopy(opts)
+          safe_opts.replace = nil
+          return original_notify(msg, level, safe_opts)
+        end
+        return original_notify(msg, level, opts)
+      end
     end,
   },
 }
