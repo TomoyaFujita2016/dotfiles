@@ -13,23 +13,23 @@ return {
       require("conform").setup({
         formatters_by_ft = {
           python = { "ruff_format", "ruff_fix", "ruff_organize_imports" },
-          javascript = { "biome" },
-          typescript = { "biome" },
-          javascriptreact = { "biome" },
-          typescriptreact = { "biome" },
-          vue = { "biome" },
-          css = { "biome" },
-          html = { "biome" },
-          json = { "biome" },
+          javascript = { "eslint_d", "prettier" },
+          typescript = { "eslint_d", "prettier" },
+          javascriptreact = { "eslint_d", "prettier" },
+          typescriptreact = { "eslint_d", "prettier" },
+          vue = { "eslint_d", "prettier" },
+          css = { "prettier" },
+          html = { "prettier" },
+          json = { "prettier" },
           yaml = { "prettier" },
           markdown = { "prettier" },
           lua = { "stylua" },
           sh = { "shfmt" },
         },
-        format_on_save = {
-          timeout_ms = 500,
-          lsp_fallback = true,
-        },
+        -- format_on_save = {
+        --   timeout_ms = 500,
+        --   lsp_fallback = true,
+        -- },
         -- formatterの詳細設定
         formatters = {
           ruff_format = {
