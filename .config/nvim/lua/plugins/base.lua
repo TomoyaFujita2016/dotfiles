@@ -32,10 +32,15 @@ return {
       vim.g.oscyank_term = "default"
       vim.g.oscyank_max_length = 0
 
-      -- ビジュアルモードでのヤンク時にOSC52を使用
-      vim.keymap.set('v', '<leader>y', ':OSCYank<CR>', { silent = true, desc = 'OSC52でヤンク' })
-      vim.keymap.set('n', '<leader>y', '<Plug>OSCYankOperator', { silent = true, desc = 'OSC52でヤンク' })
-      vim.keymap.set('n', '<leader>yy', '<leader>y_', { silent = true, remap = true, desc = 'OSC52で行ヤンク' })
+      -- 通常のヤンク操作と自動連動
+      vim.api.nvim_create_autocmd("TextYankPost", {
+        group = vim.api.nvim_create_augroup("OSCYankPost", { clear = true }),
+        callback = function()
+          if vim.v.event.operator == 'y' and vim.v.event.regname == '' then
+            vim.fn.OSCYankRegister('')
+          end
+        end,
+      })
     end,
   },
 }
