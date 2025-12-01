@@ -4,6 +4,18 @@ return {
     event = "VimEnter",
     opts = function()
       local dashboard = require("alpha.themes.dashboard")
+      local hostname = vim.fn.hostname()
+
+      -- ホスト名から色を生成（同じホスト名なら同じ色）
+      local function hostname_to_color(name)
+        local hash = 0
+        for i = 1, #name do
+          hash = (hash * 31 + string.byte(name, i)) % 16777216
+        end
+        return string.format("#%06x", hash)
+      end
+
+      local hostname_color = hostname_to_color(hostname)
 
       dashboard.section.header.val = {
         "                                                                                       ▒█▀▀▄                ",
@@ -21,7 +33,9 @@ return {
         "                                                                        ▀                        ▄     ▄█   ",
         "                                                                       ░█  ░▀▒                   ▀▒  ▒▀▀    ",
         "                                                                         ▄▀▄▀▄▒░░░▄▄▄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▄▀▄",
+        "",
       }
+
       dashboard.section.buttons.val = {
         dashboard.button("f", "  Find file", ":Telescope smart_open <CR>"),
         dashboard.button("i", "  New file", ":ene <BAR> startinsert <CR>"),
@@ -34,7 +48,8 @@ return {
         dashboard.button("q", "  Quit", ":qa<CR>"),
       }
 
-      vim.api.nvim_set_hl(0, "AlphaHeader", { fg = "#98D2C0" })
+      -- ホスト名ベースの色でハイライトを設定
+      vim.api.nvim_set_hl(0, "AlphaHeader", { fg = hostname_color })
 
       for _, button in ipairs(dashboard.section.buttons.val) do
         button.opts.hl = "AlphaButtons"
@@ -66,7 +81,10 @@ return {
         callback = function()
           local stats = require("lazy").stats()
           local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-          dashboard.section.footer.val = "⚡ Neovim loaded " .. stats.count .. " plugins in " .. ms .. "ms"
+          dashboard.section.footer.val = {
+            "🖧 Now on \"" .. vim.fn.hostname() .. "\"",
+            "⚡ Neovim loaded " .. stats.count .. " plugins in " .. ms .. "ms",
+          }
           pcall(vim.cmd.AlphaRedraw)
         end,
       })

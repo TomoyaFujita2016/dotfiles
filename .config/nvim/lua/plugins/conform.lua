@@ -44,6 +44,9 @@ return {
             command = utils.get_python_env(),
             args = { "-m", "ruff", "check", "--select", "I", "--fix-only", "-" },
           },
+          shfmt = {
+            prepend_args = { "-i", "2" }, -- Use 2 spaces for indentation
+          },
           --biome = {
           --  command = "biome",
           --  args = { "format", "--stdin-file-path", "$FILENAME" },
