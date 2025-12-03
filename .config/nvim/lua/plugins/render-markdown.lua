@@ -34,7 +34,9 @@ return {
 			"luarocks.nvim",
 		},
 		config = function()
-			require("image").setup({
+			-- エラーが出たら無視して続行
+			local ok, err = pcall(function()
+				require("image").setup({
 				backend = "kitty", -- Kittyを使用
 				processor = "magick_cli", -- ImageMagick CLIを使用
 				integrations = {
@@ -71,7 +73,12 @@ return {
 
 				-- ハイジャック設定（画像ファイルを直接開く）
 				hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif" },
-			})
+				})
+			end)
+			if not ok then
+				-- エラー時は警告のみ表示して続行
+				vim.notify("image.nvim setup failed (CUI環境では画像表示無効): " .. tostring(err), vim.log.levels.WARN)
+			end
 		end,
 	},
 
