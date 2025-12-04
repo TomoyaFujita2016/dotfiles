@@ -29,7 +29,8 @@ return {
     event = "VeryLazy",
     config = function()
       vim.g.oscyank_silent = false
-      vim.g.oscyank_term = "default"
+      -- tmux内ではtmux用エスケープが必要
+      vim.g.oscyank_term = "tmux"
       vim.g.oscyank_max_length = 0
 
       -- 通常のヤンク操作と自動連動
