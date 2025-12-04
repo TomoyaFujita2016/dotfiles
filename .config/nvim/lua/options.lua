@@ -12,7 +12,7 @@ g.loaded_netrwPlugin = 1
 -- 基本設定
 opt.termguicolors = true
 opt.mouse = "" -- まうすむこう
--- opt.clipboard:append({ "unnamedplus" })  -- Disabled: conflicts with vim-oscyank over SSH
+opt.clipboard:append({ "unnamedplus" })
 
 -- インデント設定
 opt.expandtab = true
