@@ -11,7 +11,7 @@
 # - Basic development packages
 # ============================================================================
 
-set -e  # Exit on error
+set -euo pipefail  # Exit on error, undefined variables, and pipe failures
 
 # ────────────────────────────────────────────────────────────────────────────
 # Color Codes and Logging Functions
@@ -71,7 +71,7 @@ declare -A INSTALL_STATUS
 get_latest_python_version() {
     # Get latest stable Python version from pyenv
     if [ -d "$HOME/.pyenv" ]; then
-        ~/.pyenv/bin/pyenv install --list | grep -E '^\s*3\.[0-9]+\.[0-9]+$' | tail -1 | tr -d ' '
+        timeout 30 ~/.pyenv/bin/pyenv install --list | grep -E '^\s*3\.[0-9]+\.[0-9]+$' | tail -1 | tr -d ' ' || echo "3.12.7"
     else
         echo "3.12.7"  # Fallback
     fi
@@ -80,7 +80,7 @@ get_latest_python_version() {
 get_latest_node_version() {
     # Get latest stable Node version from nodenv
     if [ -d "$HOME/.nodenv" ]; then
-        ~/.nodenv/bin/nodenv install --list | grep -E '^\s*[0-9]+\.[0-9]+\.[0-9]+$' | tail -1 | tr -d ' '
+        timeout 30 ~/.nodenv/bin/nodenv install --list | grep -E '^\s*[0-9]+\.[0-9]+\.[0-9]+$' | tail -1 | tr -d ' ' || echo "20.18.0"
     else
         echo "20.18.0"  # Fallback to LTS
     fi
@@ -88,6 +88,50 @@ get_latest_node_version() {
 
 check_command() {
     command -v "$1" >/dev/null 2>&1
+}
+
+prompt_yes_no() {
+    local prompt_message="$1"
+    local default_response="${2:-Y}"
+    local response
+
+    read -p "$prompt_message" response
+    response=${response:-$default_response}
+
+    if [[ "$response" =~ ^[Yy]$ ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+check_already_installed() {
+    local tool_name="$1"
+    local check_type="${2:-command}"  # command, directory, or file
+    local check_target="${3:-$tool_name}"
+
+    case "$check_type" in
+        command)
+            if check_command "$check_target"; then
+                log_info "$tool_name already installed"
+                "$check_target" --version 2>/dev/null || echo "Version check not available"
+                return 0
+            fi
+            ;;
+        directory)
+            if [ -d "$check_target" ]; then
+                log_info "$tool_name already installed, skipping clone"
+                return 0
+            fi
+            ;;
+        file)
+            if [ -f "$check_target" ]; then
+                log_info "$tool_name already exists"
+                return 0
+            fi
+            ;;
+    esac
+    return 1
 }
 
 # ────────────────────────────────────────────────────────────────────────────
@@ -119,38 +163,28 @@ select_tools() {
     echo ""
 
     # Basic packages
-    read -p "Install basic packages (git, curl, build-essential, etc.)? [Y/n]: " response
-    response=${response:-Y}
-    if [[ "$response" =~ ^[Yy]$ ]]; then
+    if prompt_yes_no "Install basic packages (git, curl, build-essential, etc.)? [Y/n]: "; then
         INSTALL_BASIC="true"
     fi
 
     # zsh
     echo ""
-    read -p "Install zsh and migrate from bash? [Y/n]: " response
-    response=${response:-Y}
-    if [[ "$response" =~ ^[Yy]$ ]]; then
+    if prompt_yes_no "Install zsh and migrate from bash? [Y/n]: "; then
         INSTALL_ZSH="true"
-        read -p "  Change default shell to zsh? [Y/n]: " shell_response
-        shell_response=${shell_response:-Y}
-        if [[ "$shell_response" =~ ^[Yy]$ ]]; then
+        if prompt_yes_no "  Change default shell to zsh? [Y/n]: "; then
             CHANGE_SHELL="true"
         fi
     fi
 
     # starship (prompt)
     echo ""
-    read -p "Install starship (modern prompt)? [Y/n]: " response
-    response=${response:-Y}
-    if [[ "$response" =~ ^[Yy]$ ]]; then
+    if prompt_yes_no "Install starship (modern prompt)? [Y/n]: "; then
         INSTALL_STARSHIP="true"
     fi
 
     # pyenv + Python
     echo ""
-    read -p "Install pyenv + Python? [Y/n]: " response
-    response=${response:-Y}
-    if [[ "$response" =~ ^[Yy]$ ]]; then
+    if prompt_yes_no "Install pyenv + Python? [Y/n]: "; then
         INSTALL_PYENV="true"
         echo "  Select Python version:"
         echo "    1) latest ($(get_latest_python_version))"
@@ -169,9 +203,7 @@ select_tools() {
 
     # nodenv + Node.js
     echo ""
-    read -p "Install nodenv + Node.js? [Y/n]: " response
-    response=${response:-Y}
-    if [[ "$response" =~ ^[Yy]$ ]]; then
+    if prompt_yes_no "Install nodenv + Node.js? [Y/n]: "; then
         INSTALL_NODENV="true"
         echo "  Select Node version:"
         echo "    1) latest ($(get_latest_node_version))"
@@ -190,17 +222,13 @@ select_tools() {
 
     # neovim
     echo ""
-    read -p "Install neovim (build from source)? [Y/n]: " response
-    response=${response:-Y}
-    if [[ "$response" =~ ^[Yy]$ ]]; then
+    if prompt_yes_no "Install neovim (build from source)? [Y/n]: "; then
         INSTALL_NEOVIM="true"
     fi
 
     # tmux
     echo ""
-    read -p "Install tmux? [Y/n]: " response
-    response=${response:-Y}
-    if [[ "$response" =~ ^[Yy]$ ]]; then
+    if prompt_yes_no "Install tmux? [Y/n]: "; then
         INSTALL_TMUX="true"
     fi
 }
@@ -222,9 +250,7 @@ confirm_selections() {
     [ "$INSTALL_ZSH" = "true" ] && echo "Note: zinit will auto-install on first zsh run"
     echo ""
 
-    read -p "Proceed with installation? [Y/n]: " response
-    response=${response:-Y}
-    if [[ "$response" =~ ^[Yy]$ ]]; then
+    if prompt_yes_no "Proceed with installation? [Y/n]: "; then
         return 0
     else
         log_warn "Installation cancelled by user"
@@ -286,21 +312,51 @@ change_default_shell() {
         return 0
     fi
 
-    # Get zsh path
-    local zsh_path=$(which zsh)
+    # Get zsh path and validate it
+    local zsh_path
+    zsh_path=$(command -v zsh)
     if [ -z "$zsh_path" ]; then
         log_error "zsh not found in PATH"
         return 1
     fi
 
+    # Validate zsh_path to prevent command injection
+    # Must be an absolute path and exist in /etc/shells
+    if [[ ! "$zsh_path" =~ ^/ ]]; then
+        log_error "Invalid zsh path (not absolute): $zsh_path"
+        return 1
+    fi
+
+    if ! grep -q "^${zsh_path}$" /etc/shells 2>/dev/null; then
+        log_warn "zsh path not in /etc/shells, adding it..."
+        echo "$zsh_path" | sudo tee -a /etc/shells >/dev/null || {
+            log_error "Failed to add zsh to /etc/shells"
+            return 1
+        }
+    fi
+
     # Change shell
     log_info "Changing shell to $zsh_path"
-    log_warn "You may need to enter your password"
-    chsh -s "$zsh_path" || { log_error "Failed to change default shell"; return 1; }
 
-    log_info "Default shell changed to zsh"
-    log_warn "Please log out and log back in for the change to take effect"
-    INSTALL_STATUS[shell_change]="success"
+    # Try with sudo first (works in Docker/test environments with NOPASSWD)
+    if sudo -n chsh -s "$zsh_path" "$USER" 2>/dev/null; then
+        log_info "Default shell changed to zsh (via sudo)"
+        log_warn "Please log out and log back in for the change to take effect"
+        INSTALL_STATUS[shell_change]="success"
+    else
+        # Fall back to regular chsh (requires user password)
+        log_warn "You may need to enter your password"
+        if chsh -s "$zsh_path"; then
+            log_info "Default shell changed to zsh"
+            log_warn "Please log out and log back in for the change to take effect"
+            INSTALL_STATUS[shell_change]="success"
+        else
+            log_error "Failed to change default shell"
+            log_warn "You can manually change shell later with: chsh -s $zsh_path"
+            INSTALL_STATUS[shell_change]="failed"
+            return 1
+        fi
+    fi
 
     return 0
 }
@@ -316,9 +372,39 @@ install_starship() {
         return 0
     fi
 
-    # Install starship using official installer
-    log_info "Downloading and installing starship..."
-    curl -sS https://starship.rs/install.sh | sh -s -- -y || { log_error "Failed to install starship"; return 1; }
+    # Install starship using official installer with security measures
+    log_info "Downloading starship installer..."
+    local installer_path="/tmp/starship-install-$$.sh"
+
+    # Download installer with timeout and retry
+    curl --connect-timeout 10 --retry 3 --retry-delay 2 -fsSL https://starship.rs/install.sh -o "$installer_path" || {
+        log_error "Failed to download starship installer"
+        rm -f "$installer_path"
+        return 1
+    }
+
+    # Verify downloaded file is not empty and looks like a shell script
+    if [ ! -s "$installer_path" ]; then
+        log_error "Downloaded installer is empty"
+        rm -f "$installer_path"
+        return 1
+    fi
+
+    if ! head -1 "$installer_path" | grep -q '^#!/'; then
+        log_error "Downloaded file does not appear to be a shell script"
+        rm -f "$installer_path"
+        return 1
+    fi
+
+    log_info "Installing starship..."
+    sh "$installer_path" -y || {
+        log_error "Failed to install starship"
+        rm -f "$installer_path"
+        return 1
+    }
+
+    # Clean up
+    rm -f "$installer_path"
 
     log_info "starship installed successfully"
     starship --version
@@ -357,8 +443,9 @@ install_pyenv() {
     ~/.pyenv/bin/pyenv install -s ${PYTHON_VERSION} || { log_error "Failed to install Python ${PYTHON_VERSION}"; return 1; }
     ~/.pyenv/bin/pyenv global ${PYTHON_VERSION}
 
+    # Verify Python installation using pyenv shims
     log_info "Python ${PYTHON_VERSION} installed successfully"
-    python --version
+    ~/.pyenv/shims/python --version || python --version
 
     return 0
 }
@@ -478,7 +565,14 @@ update_zsh_configs() {
         log_info "Enhancing pyenv initialization in .zprofile..."
         # Add pyenv init - after pyenv init --path
         sed -i '/eval "$(pyenv init --path)"/a \  eval "$(pyenv init -)"' "$zprofile_file"
-        log_info "Enhanced pyenv initialization in .zprofile"
+
+        # Verify the modification was successful
+        if grep -q 'eval "$(pyenv init -)"' "$zprofile_file"; then
+            log_info "Enhanced pyenv initialization in .zprofile"
+        else
+            log_error "Failed to enhance pyenv initialization in .zprofile"
+            return 1
+        fi
     fi
 
     return 0
