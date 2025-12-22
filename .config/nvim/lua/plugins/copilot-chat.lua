@@ -72,7 +72,14 @@ return {
 
               local commit_message = response_text:match("```gitcommit\n(.-)\n```")
               if commit_message then
+                -- OSC 52でクリップボードにコピー（リモートtmux対応）
+                local b64 = vim.base64.encode(commit_message)
+                local osc52 = string.format("\027]52;c;%s\027\\", b64)
+                io.stdout:write(osc52)
+                io.stdout:flush()
+                -- 通常のレジスタにも保存
                 vim.fn.setreg("+", commit_message)
+                vim.fn.setreg('"', commit_message)
                 vim.notify("Commit message copied to clipboard!")
               else
                 vim.notify("Commit message was NOT found...", "warn")
