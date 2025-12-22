@@ -8,13 +8,13 @@ dotfiles for Ubuntu server environment with zsh, neovim, and tmux.
 ./setup-init.sh
 
 # This interactive script will install:
-# - **Basic packages**: git, curl, build-essential, development libraries
-# - **zsh**: Modern shell (migrates from bash)
-# - **starship**: Cross-shell prompt
-# - **pyenv** + Python (version selectable)
-# - **nodenv** + Node.js (version selectable)
-# - **neovim** (built from source - stable branch)
-# - **tmux**
+# - Basic packages: git, curl, build-essential, development libraries
+# - zsh: Modern shell (migrates from bash)
+# - starship: Cross-shell prompt
+# - pyenv + Python (version selectable)
+# - nodenv + Node.js (version selectable)
+# - neovim (built from source - stable branch)
+# - tmux
 
 ./setup-config.sh
 
