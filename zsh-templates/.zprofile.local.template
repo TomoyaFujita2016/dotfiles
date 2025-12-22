@@ -14,3 +14,12 @@
 # ----------------------------
 # Example: Initialize specific tools
 # eval "$(custom-tool init)"
+
+# ----------------------------
+# Version Manager Configuration
+# ----------------------------
+# Example: Set specific Python version for this machine
+# export PYENV_VERSION=3.11.0
+
+# Example: Set specific Node version for this machine
+# export NODENV_VERSION=20.0.0
