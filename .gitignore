@@ -1,0 +1,29 @@
+# ローカル設定ファイル（機密情報含む）
+# これらのファイルはGit管理しない
+**/*.local
+*.local
+
+# Zsh固有のローカル設定
+.zshenv.local
+.zprofile.local
+.zshrc.local
+
+# バックアップファイル
+*.backup
+*~
+
+# OS生成ファイル
+.DS_Store
+Thumbs.db
+
+# エディタ設定
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ログファイル
+*.log
+
+# Claude Code関連
+claudedocs/

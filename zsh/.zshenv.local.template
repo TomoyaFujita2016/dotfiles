@@ -1,0 +1,25 @@
+#
+# .zshenv.local.template - Template for local environment variables
+# Copy this file to ~/.zshenv.local and edit for new environments
+#
+
+# ----------------------------
+# API Keys & Tokens (Sensitive Information)
+# ----------------------------
+# Replace with your actual values
+# export DEEPL_API_KEY="your-api-key-here"
+# export TAVILY_API_KEY="your-api-key-here"
+# export CLOUDFLARE_API_TOKEN="your-token-here"
+
+# ----------------------------
+# AWS Configuration
+# ----------------------------
+# export AWS_PROFILE=default
+
+# ----------------------------
+# PC-Specific Environment Variables
+# ----------------------------
+# X11 backend specification (may not be needed in Wayland environments)
+# export WINIT_UNIX_BACKEND=x11
+
+# Add other PC-specific environment variables here

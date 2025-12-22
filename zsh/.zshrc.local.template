@@ -1,0 +1,40 @@
+#
+# .zshrc.local.template - Template for PC-specific interactive shell configuration
+# Copy this file to ~/.zshrc.local and edit for new environments
+#
+
+# ----------------------------
+# Git Configuration Switching (for multiple accounts)
+# ----------------------------
+# Replace with your account information
+# function gitMain() {
+#   git config --global user.name "YourName"
+#   git config --global user.email "your@email.com"
+#   git config --list
+# }
+
+# function gitWork() {
+#   git config --global user.name "YourWorkName"
+#   git config --global user.email "work@company.com"
+#   git config --list
+# }
+
+# ----------------------------
+# GitHub Personal Access Token
+# ----------------------------
+# function gitKey() {
+#   echo "your-github-token" | xclip -selection clipboard
+# }
+
+# ----------------------------
+# Auto-start tmux (only if needed)
+# ----------------------------
+# Auto-start tmux session on login
+# if [ $SHLVL = 1 ]; then
+#     tmux a -t main || tmux new-session -s main
+# fi
+
+# ----------------------------
+# PC-Specific Functions & Aliases
+# ----------------------------
+# Add functions and aliases used only on this PC here

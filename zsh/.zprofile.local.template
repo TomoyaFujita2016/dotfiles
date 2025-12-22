@@ -1,0 +1,16 @@
+#
+# .zprofile.local.template - Template for PC-specific initialization
+# Copy this file to ~/.zprofile.local and edit for new environments
+#
+
+# ----------------------------
+# PC-Specific PATH Additions
+# ----------------------------
+# Example: PATH for tools used only on this PC
+# export PATH="/opt/custom-tool/bin:$PATH"
+
+# ----------------------------
+# PC-Specific Initialization
+# ----------------------------
+# Example: Initialize specific tools
+# eval "$(custom-tool init)"
