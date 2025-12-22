@@ -80,17 +80,28 @@ setup_local_config() {
 main() {
     log_info "Starting config setup..."
 
-    # Setup zsh configuration files
-    log_info "Setting up zsh configuration..."
-    if [ -d "$SCRIPT_DIR/zsh" ]; then
-        create_symlink "$SCRIPT_DIR/zsh/.zshenv" "$HOME/.zshenv"
-        create_symlink "$SCRIPT_DIR/zsh/.zprofile" "$HOME/.zprofile"
-        create_symlink "$SCRIPT_DIR/zsh/.zshrc" "$HOME/.zshrc"
+    # Setup home directory dotfiles
+    log_info "Setting up home directory dotfiles..."
+    if [ -d "$SCRIPT_DIR/home" ]; then
+        for dotfile in "$SCRIPT_DIR"/home/.*; do
+            # Skip . and ..
+            if [ "$(basename "$dotfile")" = "." ] || [ "$(basename "$dotfile")" = ".." ]; then
+                continue
+            fi
 
-        # Setup local config files from templates
-        setup_local_config "$SCRIPT_DIR/zsh/.zshenv.local.template" "$HOME/.zshenv.local"
-        setup_local_config "$SCRIPT_DIR/zsh/.zprofile.local.template" "$HOME/.zprofile.local"
-        setup_local_config "$SCRIPT_DIR/zsh/.zshrc.local.template" "$HOME/.zshrc.local"
+            if [ -e "$dotfile" ]; then
+                filename=$(basename "$dotfile")
+                create_symlink "$dotfile" "$HOME/$filename"
+            fi
+        done
+    fi
+
+    # Setup local config files from templates
+    log_info "Setting up local config files from templates..."
+    if [ -d "$SCRIPT_DIR/zsh-templates" ]; then
+        setup_local_config "$SCRIPT_DIR/zsh-templates/.zshenv.local.template" "$HOME/.zshenv.local"
+        setup_local_config "$SCRIPT_DIR/zsh-templates/.zprofile.local.template" "$HOME/.zprofile.local"
+        setup_local_config "$SCRIPT_DIR/zsh-templates/.zshrc.local.template" "$HOME/.zshrc.local"
     fi
 
     # Process all items in .config directory
