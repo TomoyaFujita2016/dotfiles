@@ -274,6 +274,7 @@ install_basic_packages() {
         zlib1g-dev libbz2-dev libsqlite3-dev \
         libffi-dev liblzma-dev \
         unzip zip \
+        ripgrep \
         software-properties-common || { log_error "Failed to install basic packages"; return 1; }
 
     log_info "Basic packages installed successfully"
