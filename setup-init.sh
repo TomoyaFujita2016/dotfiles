@@ -275,6 +275,8 @@ install_basic_packages() {
         libffi-dev liblzma-dev \
         unzip zip \
         ripgrep \
+        whois \
+        pwgen \
         software-properties-common || { log_error "Failed to install basic packages"; return 1; }
 
     log_info "Basic packages installed successfully"
@@ -547,7 +549,7 @@ install_tmux() {
 update_zsh_configs() {
     log_step "Updating zsh configuration files..."
 
-    local zprofile_file="$SCRIPT_DIR/home/.zprofile"
+    local zprofile_file="$SCRIPT_DIR/dothome/.zprofile"
 
     # Check if file exists
     if [ ! -f "$zprofile_file" ]; then

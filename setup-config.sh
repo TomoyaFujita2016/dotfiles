@@ -82,8 +82,8 @@ main() {
 
     # Setup home directory dotfiles
     log_info "Setting up home directory dotfiles..."
-    if [ -d "$SCRIPT_DIR/home" ]; then
-        for dotfile in "$SCRIPT_DIR"/home/.*; do
+    if [ -d "$SCRIPT_DIR/dothome" ]; then
+        for dotfile in "$SCRIPT_DIR"/dothome/.*; do
             # Skip . and ..
             if [ "$(basename "$dotfile")" = "." ] || [ "$(basename "$dotfile")" = ".." ]; then
                 continue

@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__sequential-thinking__sequentialthinking",
+      "WebSearch",
+      "Read(/home/t-pad/.local/share/nvim/mason/bin/**)",
+      "Read(/home/t-pad/.local/share/nvim/mason/packages/**)",
+      "mcp__deepwiki__ask_question",
+      "mcp__context7__resolve-library-id",
+      "Bash(echo $TERM)",
+      "Read(//home/t-pad/.local/share/nvim/lazy/markdown-preview.nvim/**)",
+      "mcp__deepwiki__read_wiki_structure",
+      "WebFetch(domain:github.com)",
+      "Bash(find:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
