@@ -1,0 +1,46 @@
+# Font settings
+font-family = Hack Nerd Font
+font-size = 14
+
+# Window settings
+window-decoration = false
+background-opacity = 0.9
+window-padding-x = 3
+window-padding-y = 1
+
+# Terminal settings
+term = xterm-256color
+
+# Colors - Primary
+background = 2d2a2e
+foreground = fff1f3
+
+# Colors - Normal (palette 0-7)
+palette = 0=#2c2525
+palette = 1=#fd6883
+palette = 2=#adda78
+palette = 3=#f9cc6c
+palette = 4=#f38d70
+palette = 5=#a8a9eb
+palette = 6=#85dacc
+palette = 7=#fff1f3
+
+# Colors - Bright (palette 8-15)
+palette = 8=#72696a
+palette = 9=#fd6883
+palette = 10=#adda78
+palette = 11=#f9cc6c
+palette = 12=#f38d70
+palette = 13=#a8a9eb
+palette = 14=#85dacc
+palette = 15=#fff1f3
+
+
+gtk-tabs-location = hidden
+
+shell-integration-features = no-title
+#shell-integration = detect
+shell-integration-features = cursor,sudo,title
+
+keybind = ctrl+shift+h=prompt_surface_title
+

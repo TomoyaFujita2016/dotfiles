@@ -151,13 +151,13 @@ fi
 # ----------------------------
 # tmux auto-start
 # ----------------------------
-#if [ $SHLVL = 1 ]; then
-#    tmux a -t main
-#    tmux_return=$?
-#    if [ $tmux_return = 1 ]; then
-#        tmux new-session -s main
-#    fi
-#fi
+if [ $SHLVL = 1 ]; then
+    tmux a -t main
+    tmux_return=$?
+    if [ $tmux_return = 1 ]; then
+        tmux new-session -s main
+    fi
+fi
 
 # ----------------------------
 # Load Local Configuration

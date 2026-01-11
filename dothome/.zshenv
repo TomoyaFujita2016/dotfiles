@@ -53,3 +53,8 @@ fi
 # ----------------------------
 # Store sensitive info and PC-specific variables in ~/.zshenv.local
 [ -f ~/.zshenv.local ] && source ~/.zshenv.local
+
+# ZVM
+export ZVM_INSTALL="$HOME/.zvm/self"
+export PATH="$PATH:$HOME/.zvm/bin"
+export PATH="$PATH:$ZVM_INSTALL/"
