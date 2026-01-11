@@ -175,6 +175,33 @@ worktree() {
 }
 alias wt=worktree
 
+worktree-session() {
+  local selected repo branch name
+  selected=$(git worktree list | fzf --height 40% | awk '{print $1}')
+  if [[ -n "$selected" ]]; then
+    # 親ディレクトリ名(repository) + worktree名(branch)
+    repo=$(basename "$(dirname "$selected")")
+    branch=$(basename "$selected")
+    name="${branch} (${repo})"
+    
+    if tmux has-session -t "$name" 2>/dev/null; then
+      if [[ -n "$TMUX" ]]; then
+        tmux switch-client -t "$name"
+      else
+        tmux attach-session -t "$name"
+      fi
+    else
+      if [[ -n "$TMUX" ]]; then
+        tmux new-session -d -s "$name" -c "$selected"
+        tmux switch-client -t "$name"
+      else
+        tmux new-session -s "$name" -c "$selected"
+      fi
+    fi
+  fi
+}
+alias wts=worktree-session
+
 # ----------------------------
 # Load Local Configuration
 # ----------------------------
