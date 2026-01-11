@@ -160,6 +160,22 @@ if [ $SHLVL = 1 ]; then
 fi
 
 # ----------------------------
+# git worktree
+# ----------------------------
+worktree() {
+  local selected
+  selected=$(git worktree list | fzf --height 40% | awk '{print $1}')
+  if [[ -n "$selected" ]]; then
+    cd "$selected" || return
+    # tmux使用中なら window名を変更
+    if [[ -n "$TMUX" ]]; then
+      tmux rename-window "$(basename "$selected")"
+    fi
+  fi
+}
+alias wt=worktree
+
+# ----------------------------
 # Load Local Configuration
 # ----------------------------
 # Store PC-specific functions, aliases, and settings in ~/.zshrc.local
