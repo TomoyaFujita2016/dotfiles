@@ -5,7 +5,7 @@ dotfiles for Ubuntu server environment with zsh, neovim, and tmux.
 ## Quick Start
 
 ```bash
-./setup-init.sh
+./setup-ubuntu.sh
 
 # This interactive script will install:
 # - Basic packages: git, curl, build-essential, development libraries
