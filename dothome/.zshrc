@@ -207,16 +207,132 @@ alias wts=worktree-session
 # ----------------------------
 # tmux new session
 # ----------------------------
-tns() {
+tmux-create-new-session() {
   if [ -n "$TMUX" ]; then
-    # tmuxの中にいる場合：セッションを作ってから切り替える
+    # When inside tmux: Create a session before switching 
     tmux new-session -d -s "$1"
     tmux switch-client -t "$1"
   else
-    # tmuxの外にいる場合：普通に新規作成
+    # When outside of tmux: Create a new session
     tmux new-session -s "$1"
   fi
 }
+alias tns=tmux-create-new-session
+
+# Git worktree setup function
+# Usage: git-worktree-setup <repository_url> [directory_name]
+git-worktree-setup() {
+    local repo_url="$1"
+    local dir_name="${2:-$(basename "$repo_url" .git)}"
+
+    if [[ -z "$repo_url" ]]; then
+        echo "Usage: git_worktree_setup <repository_url> [directory_name]"
+        return 1
+    fi
+
+    # Create directory structure
+    mkdir -p "$dir_name"
+    cd "$dir_name" || return 1
+ 
+    # Clone as bare repository into .git
+    git clone --bare "$repo_url" .git
+ 
+    # Configure bare repository for worktree usage
+    git config core.bare false
+    git config core.worktree ..
+ 
+    # Create main branch worktree
+    local default_branch
+    default_branch=$(git symbolic-ref --short HEAD 2>/dev/null || echo "main")
+
+    # Checkout main/master branch as primary worktree
+    git worktree add main "$default_branch" 2>/dev/null || \
+    git worktree add main master 2>/dev/null || \
+    git worktree add main "$(git branch -r | head -1 | sed 's/.*\///')"
+ 
+    echo "✅ Setup complete: $dir_name"
+    echo "   Bare repo: $dir_name/.git"
+    echo "   Worktree:  $dir_name/main"
+
+    cd ..
+}
+alias gws=git-worktree-setup
+
+
+# git-worktree-add: Git Worktree Add (create branch if not exists)
+# Usage: git-worktree-add <branch_name> [base_branch]
+git-worktree-add() {
+    local branch_name="$1"
+    local base_branch="${2:-HEAD}"
+
+    if [[ -z "$branch_name" ]]; then
+        echo "Usage: git-wta <branch_name> [base_branch]"
+        echo "  Creates a worktree for the branch (creates branch if it doesn't exist)"
+        return 1
+    fi
+
+    # Find the root .git directory (bare repo parent)
+    _find_worktree_root() {
+        local dir="$PWD"
+        
+        while [[ "$dir" != "/" ]]; do
+            # Check if this directory has a .git that is a bare repo style
+            if [[ -d "$dir/.git" ]]; then
+                if [[ -d "$dir/.git/worktrees" ]] || grep -q "bare = false" "$dir/.git/config" 2>/dev/null; then
+                    echo "$dir"
+                    return 0
+                fi
+            fi
+            
+            # Check if we're inside a worktree (has .git file pointing to main repo)
+            if [[ -f "$dir/.git" ]]; then
+                local git_dir main_git_dir
+                git_dir=$(cat "$dir/.git" | sed 's/gitdir: //')
+                main_git_dir=$(cd "$dir" && cd "$(dirname "$git_dir")" && pwd)
+                echo "$(dirname "$(dirname "$main_git_dir")")"
+                return 0
+            fi
+            
+            dir=$(dirname "$dir")
+        done
+        
+        return 1
+    }
+
+    local root_dir
+    root_dir=$(_find_worktree_root)
+
+    if [[ -z "$root_dir" ]]; then
+        echo "❌ Error: Could not find worktree root directory"
+        return 1
+    fi
+
+    echo "📁 Worktree root: $root_dir"
+
+    local worktree_path="$root_dir/$branch_name"
+
+    if [[ -d "$worktree_path" ]]; then
+        echo "⚠️  Worktree already exists: $worktree_path"
+        return 1
+    fi
+
+    # Check if branch exists (local or remote)
+    if git -C "$root_dir" show-ref --verify --quiet "refs/heads/$branch_name" 2>/dev/null; then
+        echo "🔀 Using existing local branch: $branch_name"
+        git -C "$root_dir" worktree add "$worktree_path" "$branch_name"
+    elif git -C "$root_dir" show-ref --verify --quiet "refs/remotes/origin/$branch_name" 2>/dev/null; then
+        echo "🔀 Tracking remote branch: origin/$branch_name"
+        git -C "$root_dir" worktree add "$worktree_path" "$branch_name"
+    else
+        echo "🌱 Creating new branch: $branch_name (from $base_branch)"
+        git -C "$root_dir" worktree add -b "$branch_name" "$worktree_path" "$base_branch"
+    fi
+
+    echo "✅ Worktree created: $worktree_path"
+}
+
+alias gwa=git-worktree-add
+
 
 # ----------------------------
 # Load Local Configuration
