@@ -1,5 +1,5 @@
 # Use custom format
-format = '$directory$all'
+format = '$directory${custom.worktree_repo}$all'
 
 # Wait 10 milliseconds for starship to check files under the current directory.
 scan_timeout = 10
@@ -45,3 +45,9 @@ mustard = '#af8700'
 [git_status]
 format = '([$all_status$ahead_behind]($style)) '
 staged = '[++\($count\)](green)'
+
+[custom.worktree_repo]
+command = "dirname $(git rev-parse --git-common-dir 2>/dev/null) | xargs basename"
+when = "git rev-parse --git-dir 2>/dev/null | grep -q worktrees"
+format = '[($output)]($style) '
+style = 'bold #bd93f9'
