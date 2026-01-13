@@ -100,6 +100,7 @@ alias webm2mp4='function _webm2mp4() {
     "${1%.*}.mp4"
 }; _webm2mp4'
 
+
 # ----------------------------
 # Common Functions
 # ----------------------------
@@ -201,6 +202,21 @@ worktree-session() {
   fi
 }
 alias wts=worktree-session
+
+
+# ----------------------------
+# tmux new session
+# ----------------------------
+tns() {
+  if [ -n "$TMUX" ]; then
+    # tmuxの中にいる場合：セッションを作ってから切り替える
+    tmux new-session -d -s "$1"
+    tmux switch-client -t "$1"
+  else
+    # tmuxの外にいる場合：普通に新規作成
+    tmux new-session -s "$1"
+  fi
+}
 
 # ----------------------------
 # Load Local Configuration
