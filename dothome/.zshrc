@@ -257,7 +257,7 @@ alias gws=git-worktree-setup
 
 # git-worktree-add: Git Worktree Add (create branch if not exists)
 # Usage: git-worktree-add <branch_name> [base_branch]
-git-worktree-add() {
+worktree-add() {
     local branch_name="$1"
     local base_branch="${2:-}"
 
@@ -297,10 +297,31 @@ git-worktree-add() {
     fi
     
     cd - > /dev/null
+
+    # Copy .env files from existing worktrees
+    local source_worktree
+    source_worktree=$(git -C "$root_dir/.bare" worktree list | awk '{print $1}' | grep -v "\.bare$" | grep -v "/$branch_name$" | head -n1)
+
+    if [[ -n "$source_worktree" && -d "$source_worktree" ]]; then
+        local copied=0
+        while IFS= read -r env_file; do
+            local relative_path="${env_file#$source_worktree/}"
+            local target_file="$worktree_path/$relative_path"
+            local target_dir=$(dirname "$target_file")
+
+            mkdir -p "$target_dir"
+            cp "$env_file" "$target_file"
+            echo "📋 Copied: $relative_path"
+            ((copied++))
+        done < <(find "$source_worktree" -name ".env*" -type f 2>/dev/null)
+
+        [[ $copied -gt 0 ]] && echo "📋 Copied $copied .env file(s)"
+    fi
+
     echo "✅ Created: $worktree_path"
 }
 
-alias gwa=git-worktree-add
+alias wa=worktree-add
 
 
 # ----------------------------
