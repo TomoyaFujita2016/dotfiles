@@ -116,6 +116,10 @@ main() {
         fi
     done
 
+    # Setup Claude Code settings
+    log_info "Setting up Claude Code settings..."
+    create_symlink "$SCRIPT_DIR/.claude/settings.json" "$HOME/.claude/settings.json"
+
     log_info "Config setup completed!"
     log_info ""
     log_info "Next steps:"

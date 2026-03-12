@@ -176,7 +176,7 @@ worktree() {
 }
 alias wt=worktree
 
-worktree-session() {
+tmux-worktree() {
   local selected repo branch name
   selected=$(git worktree list | fzf --height 40% | awk '{print $1}')
   if [[ -n "$selected" ]]; then
@@ -201,7 +201,7 @@ worktree-session() {
     fi
   fi
 }
-alias wts=worktree-session
+alias tw=tmux-worktree
 
 
 # ----------------------------

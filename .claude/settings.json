@@ -1,0 +1,34 @@
+{
+  "enabledPlugins": {
+    "context7@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "github@claude-plugins-official": false,
+    "typescript-lsp@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true
+  },
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "curl -s -d \"$CLAUDE_NOTIFICATION_MESSAGE\" https://ntfy.sh/$NTFY_CLAUDECODE"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "curl -s -H 'Title: Claude Code 完了' -d \"タスクが完了しました: $CLAUDE_STOP_REASON\" https://ntfy.sh/$NTFY_CLAUDECODE"
+          }
+        ]
+      }
+    ]
+  }
+}
