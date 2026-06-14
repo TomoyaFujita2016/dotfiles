@@ -134,6 +134,63 @@ function updateDiscord() {
     sudo apt install -y /tmp/discord-update.deb
 }
 
+# Countdown timer: background sleep with desktop notification + sound on
+# start and finish, plus a live remaining-time readout in the right prompt.
+#   timer 120     # 120 秒のタイマー（2 分）
+#   timer stop    # 実行中のタイマーを中断
+zmodload zsh/datetime 2>/dev/null   # $EPOCHSECONDS
+zmodload zsh/sched 2>/dev/null      # RPROMPT を毎秒更新するため
+
+# 通知＋効果音（音はデタッチして即座に制御を返す）
+_timer_alert() {  # _timer_alert <title> <body>
+  command -v notify-send >/dev/null 2>&1 && notify-send "$1" "$2"
+  local snd=/usr/share/sounds/freedesktop/stereo/dialog-information.oga
+  [[ -f $snd ]] && command -v paplay >/dev/null 2>&1 && { paplay "$snd" &>/dev/null &! }
+}
+
+# プロンプト右側の残り時間を 1 秒ごとに置換更新する
+_timer_tick() {
+  if [[ -z $TIMER_END ]]; then
+    RPROMPT=$TIMER_BASE_RPROMPT
+    zle && zle reset-prompt
+    return
+  fi
+  local left=$(( TIMER_END - EPOCHSECONDS ))
+  if (( left > 0 )); then
+    RPROMPT="${TIMER_BASE_RPROMPT}%F{yellow}⏳$(printf '%d:%02d' $((left/60)) $((left%60)))%f"
+    sched +1 _timer_tick
+  else
+    RPROMPT=$TIMER_BASE_RPROMPT
+    unset TIMER_END
+  fi
+  zle && zle reset-prompt
+}
+
+timer() {
+  emulate -L zsh
+  if [[ -z $1 || $1 == -h || $1 == --help ]]; then
+    echo "Usage: timer SECONDS | timer stop   (例: timer 120)"
+    return 1
+  fi
+  if [[ $1 == stop ]]; then
+    [[ -n $TIMER_PID ]] && kill "$TIMER_PID" 2>/dev/null
+    unset TIMER_END TIMER_PID
+    sched +1 _timer_tick   # RPROMPT を元に戻す
+    echo "timer: 中断しました"
+    return
+  fi
+  local secs=$1
+  TIMER_END=$(( EPOCHSECONDS + secs ))
+  TIMER_BASE_RPROMPT=$RPROMPT          # starship が設定した元の右プロンプトを退避
+
+  { sleep "$secs"; _timer_alert "⏰ タイマー終了" "${secs}秒経過しました"; } &!
+  TIMER_PID=$!
+
+  _timer_alert "⏱ タイマー開始" "${secs}秒"
+  _timer_tick
+  echo "timer: ${secs}秒のタイマーを起動 (stop で中断)"
+}
+
 
 # ----------------------------
 # Starship Prompt
@@ -322,6 +379,8 @@ worktree-add() {
 }
 
 alias wa=worktree-add
+
+alias ccusage="~/.claude/bin/claude-usage"
 
 
 # ----------------------------
