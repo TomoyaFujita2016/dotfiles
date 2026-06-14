@@ -139,7 +139,6 @@ function updateDiscord() {
 #   timer 120     # 120 秒のタイマー（2 分）
 #   timer stop    # 実行中のタイマーを中断
 zmodload zsh/datetime 2>/dev/null   # $EPOCHSECONDS
-zmodload zsh/sched 2>/dev/null      # RPROMPT を毎秒更新するため
 
 # 通知＋効果音（音はデタッチして即座に制御を返す）
 _timer_alert() {  # _timer_alert <title> <body>
@@ -148,21 +147,22 @@ _timer_alert() {  # _timer_alert <title> <body>
   [[ -f $snd ]] && command -v paplay >/dev/null 2>&1 && { paplay "$snd" &>/dev/null &! }
 }
 
-# プロンプト右側の残り時間を 1 秒ごとに置換更新する
-_timer_tick() {
-  if [[ -z $TIMER_END ]]; then
-    RPROMPT=$TIMER_BASE_RPROMPT
-    zle && zle reset-prompt
-    return
-  fi
+# 残り時間を計算して RPROMPT を組み立てる（終了時は元へ戻して TMOUT 解除）
+_timer_render() {
+  [[ -n $TIMER_END ]] || return
   local left=$(( TIMER_END - EPOCHSECONDS ))
   if (( left > 0 )); then
     RPROMPT="${TIMER_BASE_RPROMPT}%F{yellow}⏳$(printf '%d:%02d' $((left/60)) $((left%60)))%f"
-    sched +1 _timer_tick
   else
     RPROMPT=$TIMER_BASE_RPROMPT
-    unset TIMER_END
+    unset TIMER_END TMOUT
   fi
+}
+
+# TMOUT=1 が有効な間、1 秒ごとに SIGALRM が届く → プロンプトを再描画
+TRAPALRM() {
+  [[ -n $TIMER_END ]] || return
+  _timer_render
   zle && zle reset-prompt
 }
 
@@ -173,21 +173,27 @@ timer() {
     return 1
   fi
   if [[ $1 == stop ]]; then
-    [[ -n $TIMER_PID ]] && kill "$TIMER_PID" 2>/dev/null
-    unset TIMER_END TIMER_PID
-    sched +1 _timer_tick   # RPROMPT を元に戻す
-    echo "timer: 中断しました"
+    if [[ -n $TIMER_END ]]; then
+      [[ -n $TIMER_PID ]] && kill "$TIMER_PID" 2>/dev/null
+      RPROMPT=$TIMER_BASE_RPROMPT
+      unset TIMER_END TIMER_PID TMOUT
+      echo "timer: 中断しました"
+    else
+      echo "timer: 実行中のタイマーはありません"
+    fi
     return
   fi
   local secs=$1
+  [[ -n $TIMER_END ]] && RPROMPT=$TIMER_BASE_RPROMPT   # 二重起動時は素の RPROMPT へ戻す
   TIMER_END=$(( EPOCHSECONDS + secs ))
-  TIMER_BASE_RPROMPT=$RPROMPT          # starship が設定した元の右プロンプトを退避
+  TIMER_BASE_RPROMPT=$RPROMPT          # starship が設定した元の右プロンプト（$(...) 文字列）を退避
 
   { sleep "$secs"; _timer_alert "⏰ タイマー終了" "${secs}秒経過しました"; } &!
   TIMER_PID=$!
 
   _timer_alert "⏱ タイマー開始" "${secs}秒"
-  _timer_tick
+  _timer_render        # RPROMPT を即セット（次の描画で表示）
+  TMOUT=1              # アイドル中 1 秒ごとに TRAPALRM を発火させライブ更新
   echo "timer: ${secs}秒のタイマーを起動 (stop で中断)"
 }
 
