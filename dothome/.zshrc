@@ -191,7 +191,6 @@ timer() {
   { sleep "$secs"; _timer_alert "⏰ タイマー終了" "${secs}秒経過しました"; } &!
   TIMER_PID=$!
 
-  _timer_alert "⏱ タイマー開始" "${secs}秒"
   _timer_render        # RPROMPT を即セット（次の描画で表示）
   TMOUT=1              # アイドル中 1 秒ごとに TRAPALRM を発火させライブ更新
   echo "timer: ${secs}秒のタイマーを起動 (stop で中断)"
