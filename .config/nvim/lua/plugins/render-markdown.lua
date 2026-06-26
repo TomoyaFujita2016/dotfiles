@@ -136,6 +136,13 @@ return {
       {
         "<leader>dd",
         function()
+          -- diagram.nvimは図タブを固定名("<renderer> diagram")で作るため、
+          -- 前回のバッファが残っていると再表示時にE95で落ちる。事前に掃除する。
+          for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+            if vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_get_name(buf):match(" diagram$") then
+              pcall(vim.api.nvim_buf_delete, buf, { force = true })
+            end
+          end
           require("diagram").show_diagram_hover()
         end,
         mode = "n",
