@@ -1,5 +1,5 @@
 # Use custom format
-format = '$directory${custom.worktree_repo}$all'
+format = '$directory${custom.worktree_repo}${custom.vpn}$all'
 
 # Wait 10 milliseconds for starship to check files under the current directory.
 scan_timeout = 10
@@ -51,3 +51,10 @@ command = "dirname $(git rev-parse --git-common-dir 2>/dev/null) | xargs basenam
 when = "git rev-parse --git-dir 2>/dev/null | grep -q worktrees"
 format = '[($output)]($style) '
 style = 'bold #bd93f9'
+
+# exit node（全通信が自宅経由）のときだけ vpn を表示する
+[custom.vpn]
+command = 'echo "🔒vpn"'
+when = 'test -n "$(tailscale status --json 2>/dev/null | jq -r ".ExitNodeStatus // empty | .ID // empty")"'
+format = '[$output]($style) '
+style = 'bold cyan'
