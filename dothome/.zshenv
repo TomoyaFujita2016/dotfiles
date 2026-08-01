@@ -28,7 +28,11 @@ export CARGO_HOME=$HOME/.cargo
 # ----------------------------
 # Terminal Settings
 # ----------------------------
-export TERM=xterm-256color
+# TERM はここで設定しない。
+# .zshenv は zsh 起動のたびに読まれるため、ここで export すると
+# 端末エミュレータ (kitty=xterm-kitty) や tmux (=tmux-256color) が
+# 設定した TERM を毎回上書きしてしまい、描画崩れの原因になる。
+# TERM は端末側と tmux の default-terminal に決めさせる。
 
 # ----------------------------
 # Less Configuration
