@@ -389,6 +389,61 @@ alias ccusage="~/.claude/bin/claude-usage"
 
 
 # ----------------------------
+# External Monitor Brightness (DDC/CI)
+# ----------------------------
+# USB-C 1本で給電しながら映像を出しているとき、輝度だけを下げるための関数。
+# 輝度指令は DisplayPort の I2C サイドバンド(DDC/CI)を通るだけなので USB PD には影響しない。
+# 内蔵パネル(eDP/LVDS)は DDC/CI 非対応なので除外する。
+
+# 接続済み外部モニターの i2c バス番号を列挙する
+_ddc_buses() {
+    local d bus
+    for d in /sys/class/drm/card*-*/; do
+        [[ -r "$d/status" && $(<"$d/status") == connected ]] || continue
+        [[ "$d" == *eDP* || "$d" == *LVDS* ]] && continue
+        bus=$(command ls "$d/ddc/i2c-dev" 2>/dev/null | head -1)
+        [[ -n "$bus" ]] && print -- "${bus#i2c-}"
+    done
+}
+
+# dim        : 全外部モニターの輝度を $DIM_HI と $DIM_LO でトグル
+# dim <0-100>: 全外部モニターを指定値に設定
+dim() {
+    local hi=${DIM_HI:-30} lo=${DIM_LO:-0}
+    local -a buses
+    buses=(${(f)"$(_ddc_buses)"})
+    buses=(${buses:#})
+
+    if (( ${#buses} == 0 )); then
+        print -u2 "dim: DDC/CI 対応の外部モニターが見つかりません"
+        return 1
+    fi
+
+    # udev ルール未適用なら sudo にフォールバック
+    local sudo_cmd=""
+    [[ -w "/dev/i2c-${buses[1]}" ]] || sudo_cmd=sudo
+
+    local target=$1
+    if [[ -z "$target" ]]; then
+        local cur
+        cur=$($sudo_cmd ddcutil --bus ${buses[1]} getvcp 10 --brief 2>/dev/null | awk '{print $4}')
+        if [[ "$cur" == <-> ]] && (( cur > lo )); then target=$lo; else target=$hi; fi
+    fi
+
+    local b rc=0
+    for b in $buses; do
+        if $sudo_cmd ddcutil --bus $b setvcp 10 $target 2>/dev/null; then
+            print "i2c-$b: 輝度 → $target"
+        else
+            print -u2 "i2c-$b: 設定に失敗しました"
+            rc=1
+        fi
+    done
+    return $rc
+}
+
+
+# ----------------------------
 # Load Local Configuration
 # ----------------------------
 # Store PC-specific functions, aliases, and settings in ~/.zshrc.local
