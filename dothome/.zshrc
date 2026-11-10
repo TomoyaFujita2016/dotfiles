@@ -448,3 +448,11 @@ dim() {
 # ----------------------------
 # Store PC-specific functions, aliases, and settings in ~/.zshrc.local
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
+
+# tmux のペイン枠に最終アクティビティ日時を出す（.tmux.conf の pane-border-format が @activity を表示する）
+# Claude Code 側は ~/.claude/settings.json の hook が同じ @activity を書く
+if [[ -n $TMUX_PANE ]]; then
+  _tmux_pane_activity() { tmux set -p -t "$TMUX_PANE" @activity "$(date '+%m/%d %H:%M')" 2>/dev/null }
+  autoload -Uz add-zsh-hook
+  add-zsh-hook precmd _tmux_pane_activity
+fi
